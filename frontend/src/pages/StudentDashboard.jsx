@@ -252,6 +252,34 @@ const StudentDashboard = () => {
     <div className="min-h-screen flex flex-col bg-tcet-lightBg">
       <Header />
 
+      {/* Student Profile Bar */}
+      <div className="bg-slate-100 border-b border-slate-300 py-2.5 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-wrap gap-y-2 gap-x-6 text-[11px] text-slate-700 items-center">
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">Student:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{localStorage.getItem('name')}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">ERP ID:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('erpId')}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">Gmail ID:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('email')}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">Contact Number:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('contactNumber') || 'N/A'}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">Class:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">
+              {localStorage.getItem('year')} - {localStorage.getItem('branch')} (Div {localStorage.getItem('division')})
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Floating Notifications */}
       {notifyMsg.text && (
         <div className={`fixed bottom-4 right-4 z-50 px-4 py-3 shadow-lg border-l-4 font-semibold text-xs flex items-center gap-2 ${

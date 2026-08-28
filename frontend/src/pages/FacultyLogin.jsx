@@ -32,6 +32,7 @@ const FacultyLogin = () => {
       localStorage.setItem('email', data.email);
       localStorage.setItem('department', data.department);
       localStorage.setItem('designation', data.designation);
+      localStorage.setItem('contactNumber', data.contactNumber);
 
       navigate('/faculty-dashboard');
     } catch (err) {

@@ -28,8 +28,9 @@ const AdminLogin = () => {
       // Save details to localStorage
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', 'admin');
-      localStorage.setItem('name', 'Administrator');
+      localStorage.setItem('name', data.name);
       localStorage.setItem('username', data.username);
+      localStorage.setItem('contactNumber', data.contactNumber);
 
       navigate('/admin-panel');
     } catch (err) {

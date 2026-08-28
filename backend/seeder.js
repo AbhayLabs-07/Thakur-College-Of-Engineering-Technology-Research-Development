@@ -22,6 +22,8 @@ const seedAdminAndFaculty = async () => {
     const hashedAdminPassword = await bcrypt.hash('admin123', saltAdmin);
 
     await Admin.create({
+      name: 'System Administrator',
+      contactNumber: '9920123456',
       username: 'admin',
       password: hashedAdminPassword,
       role: 'admin'
@@ -34,37 +36,51 @@ const seedAdminAndFaculty = async () => {
       {
         name: 'Dr. Vinitkumar Dongre',
         email: 'vini.dongre@tcetmumbai.in',
+        contactNumber: '9820011111',
         password: await bcrypt.hash('Faculty@VINI#2026', saltFaculty),
         department: 'Research and Development',
         designation: 'Professor & Dean R&D',
-        assignedDivisions: ['A', 'B', 'C'],
+        assignedDivisions: ['A', 'B', 'C', 'D'],
         role: 'faculty'
       },
       {
         name: 'Dr. Lochan Jolly',
         email: 'lochan.jolly@tcetmumbai.in',
+        contactNumber: '9820022222',
         password: await bcrypt.hash('Faculty@LOCH#2026', saltFaculty),
         department: 'Electronics & Telecommunication',
         designation: 'Professor & Dean SSW',
-        assignedDivisions: ['A', 'B', 'C'],
+        assignedDivisions: ['A', 'B', 'C', 'D'],
         role: 'faculty'
       },
       {
         name: 'Dr. Payel Saha',
         email: 'payel.saha@tcetmumbai.in',
+        contactNumber: '9820033333',
         password: await bcrypt.hash('Faculty@PAYE#2026', saltFaculty),
         department: 'Information Technology',
         designation: 'Associate Professor & HOD IT',
-        assignedDivisions: ['A', 'B', 'C'],
+        assignedDivisions: ['A', 'B', 'C', 'D'],
         role: 'faculty'
       },
       {
         name: 'Dr. Harsh Gagrani',
         email: 'harsh.gagrani@tcetmumbai.in',
+        contactNumber: '9820044444',
         password: await bcrypt.hash('Faculty@HARS#2026', saltFaculty),
         department: 'Computer Engineering',
         designation: 'Assistant Professor & CoE Lead',
-        assignedDivisions: ['A', 'B', 'C'],
+        assignedDivisions: ['A', 'B', 'C', 'D'],
+        role: 'faculty'
+      },
+      {
+        name: 'Sharda Birje',
+        email: 'sharda.birje@tcetmumbai.in',
+        contactNumber: '9820055555',
+        password: await bcrypt.hash('Faculty@SHAR#2026', saltFaculty),
+        department: 'Information Technology',
+        designation: 'Assistant Professor',
+        assignedDivisions: ['A', 'B', 'C', 'D'],
         role: 'faculty'
       }
     ];

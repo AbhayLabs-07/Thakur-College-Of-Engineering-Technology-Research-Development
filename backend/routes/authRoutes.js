@@ -35,6 +35,8 @@ router.post('/student/login', async (req, res) => {
       res.json({
         _id: student._id,
         name: student.name,
+        email: student.email,
+        contactNumber: student.contactNumber,
         erpId: student.erpId,
         userId: student.userId,
         branch: student.branch,
@@ -68,6 +70,7 @@ router.post('/faculty/login', async (req, res) => {
         _id: faculty._id,
         name: faculty.name,
         email: faculty.email,
+        contactNumber: faculty.contactNumber,
         department: faculty.department,
         designation: faculty.designation,
         role: 'faculty',
@@ -97,6 +100,8 @@ router.post('/admin/login', async (req, res) => {
     if (admin && (await bcrypt.compare(password, admin.password))) {
       res.json({
         _id: admin._id,
+        name: admin.name,
+        contactNumber: admin.contactNumber,
         username: admin.username,
         role: 'admin',
         token: generateToken(admin._id, 'admin')

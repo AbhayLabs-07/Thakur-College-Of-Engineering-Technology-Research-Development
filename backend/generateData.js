@@ -27,7 +27,7 @@ const generateMockData = async () => {
     console.log('Cleared existing Students, Components, and BorrowRecords.');
 
     // 1. Load Student list from scratch/students.json
-    const studentsJsonPath = 'C:\\Users\\Abhay D Vishwakarma\\.gemini\\antigravity-ide\\brain\\b2189065-0216-4921-9bdc-4f76401147a8\\scratch\\students.json';
+    const studentsJsonPath = path.join(__dirname, '../database/students.json');
     let studentsRawList = [];
 
     if (fs.existsSync(studentsJsonPath)) {
@@ -47,7 +47,13 @@ const generateMockData = async () => {
     const salt = await bcrypt.genSalt(10);
 
     for (const student of studentsRawList) {
-      const { username, password } = generateStudentCredentials(student.erpId);
+      let { username, password } = generateStudentCredentials(student.erpId);
+      if (student.password) {
+        password = student.password;
+      }
+      if (student.userId) {
+        username = student.userId;
+      }
       
       // Append to CSV content
       csvContent += `"${student.name}","${student.erpId}","${student.email}","${username}","${password}"\n`;
@@ -60,12 +66,13 @@ const generateMockData = async () => {
         userId: username,
         password: hashedPassword,
         name: student.name,
+        email: student.email,
         branch: student.branch || 'Computer Engineering',
-        year: 'Third Year',
+        year: student.year || 'Third Year',
         division: student.division || 'A',
         role: 'student',
-        contactNumber: `9820${Math.floor(100000 + Math.random() * 900000)}`,
-        department: 'Research and Development'
+        contactNumber: student.contactNumber || `9820${Math.floor(100000 + Math.random() * 900000)}`,
+        department: student.department || 'Research and Development'
       });
     }
 

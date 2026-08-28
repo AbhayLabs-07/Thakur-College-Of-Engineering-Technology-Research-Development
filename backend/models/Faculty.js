@@ -13,6 +13,10 @@ const facultySchema = new mongoose.Schema({
     lowercase: true,
     trim: true
   },
+  contactNumber: {
+    type: String,
+    default: ''
+  },
   password: {
     type: String,
     required: true

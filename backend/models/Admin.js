@@ -1,6 +1,16 @@
 import mongoose from 'mongoose';
 
 const adminSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+    default: 'System Administrator'
+  },
+  contactNumber: {
+    type: String,
+    default: ''
+  },
   username: {
     type: String,
     required: true,

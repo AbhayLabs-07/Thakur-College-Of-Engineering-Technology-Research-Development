@@ -62,6 +62,32 @@ const FacultyDashboard = () => {
     <div className="min-h-screen flex flex-col bg-tcet-lightBg">
       <Header />
 
+      {/* Faculty Profile Bar */}
+      <div className="bg-slate-100 border-b border-slate-300 py-2.5 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex flex-wrap gap-y-2 gap-x-6 text-[11px] text-slate-700 items-center">
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">Faculty:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{localStorage.getItem('name')}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">Rank:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{localStorage.getItem('designation')}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">Department:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{localStorage.getItem('department')}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">Faculty Gmail ID:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('email')}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">Faculty Number:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('contactNumber') || 'N/A'}</span>
+          </div>
+        </div>
+      </div>
+
       {/* Floating Notifications */}
       {notifyMsg.text && (
         <div className={`fixed bottom-4 right-4 z-50 px-4 py-3 shadow-lg border-l-4 font-semibold text-xs flex items-center gap-2 ${

@@ -1,0 +1,319 @@
+[
+  {
+    "name": "Anik Tiwari",
+    "email": "1032250997@tcetmumbai.in",
+    "erpId": "1032250997",
+    "rollNo": 997,
+    "branch": "Information Technology",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Aryan Lal",
+    "email": "1032251505@tcetmumbai.in",
+    "erpId": "1032251505",
+    "rollNo": 505,
+    "branch": "Computer Engineering",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Ankurkumar Omprakash Gupta",
+    "email": "1032250366@tcetmumbai.in",
+    "erpId": "1032250366",
+    "rollNo": 366,
+    "branch": "Electronics & Telecommunication",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Tushar Hundalekar",
+    "email": "1032251979@tcetmumbai.in",
+    "erpId": "1032251979",
+    "rollNo": 979,
+    "branch": "Artificial Intelligence & Data Science",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Vedant Mali",
+    "email": "1032251090@tcetmumbai.in",
+    "erpId": "1032251090",
+    "rollNo": 90,
+    "branch": "Artificial Intelligence & Machine Learning",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Durvang Wadekar",
+    "email": "1032251016@tcetmumbai.in",
+    "erpId": "1032251016",
+    "rollNo": 16,
+    "branch": "Mechanical Engineering",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Ayushkumar Premchandra Kahar",
+    "email": "1032251082@tcetmumbai.in",
+    "erpId": "1032251082",
+    "rollNo": 82,
+    "branch": "Information Technology",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Anhik Gaikwad",
+    "email": "1032251486@tcetmumbai.in",
+    "erpId": "1032251486",
+    "rollNo": 486,
+    "branch": "Computer Engineering",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Ritesh Kocheri",
+    "email": "1032250372@tcetmumbai.in",
+    "erpId": "1032250372",
+    "rollNo": 372,
+    "branch": "Electronics & Telecommunication",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Riya Raut",
+    "email": "1032250942@tcetmumbai.in",
+    "erpId": "1032250942",
+    "rollNo": 942,
+    "branch": "Artificial Intelligence & Data Science",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Prashant Gupta",
+    "email": "1032251490@tcetmumbai.in",
+    "erpId": "1032251490",
+    "rollNo": 490,
+    "branch": "Artificial Intelligence & Machine Learning",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Shubham Singh",
+    "email": "1032250402@tcetmumbai.in",
+    "erpId": "1032250402",
+    "rollNo": 402,
+    "branch": "Mechanical Engineering",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Yadnyesh Kale",
+    "email": "1032251083@tcetmumbai.in",
+    "erpId": "1032251083",
+    "rollNo": 83,
+    "branch": "Information Technology",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Mrugved Girnale",
+    "email": "1032251487@tcetmumbai.in",
+    "erpId": "1032251487",
+    "rollNo": 487,
+    "branch": "Computer Engineering",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Krishna Rajaram Maurya",
+    "email": "1032251092@tcetmumbai.in",
+    "erpId": "1032251092",
+    "rollNo": 92,
+    "branch": "Electronics & Telecommunication",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Animesh Durga Madhab Mohapatra",
+    "email": "1032250644@tcetmumbai.in",
+    "erpId": "1032250644",
+    "rollNo": 644,
+    "branch": "Artificial Intelligence & Data Science",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Adityashankar Pillai",
+    "email": "1032250926@tcetmumbai.com",
+    "erpId": "1032250926",
+    "rollNo": 926,
+    "branch": "Artificial Intelligence & Machine Learning",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Vandit Karanjekar",
+    "email": "1032250863@tcetmumbai.in",
+    "erpId": "1032250863",
+    "rollNo": 863,
+    "branch": "Mechanical Engineering",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Ishan Patil",
+    "email": "1032250923@tcetmumbai.in",
+    "erpId": "1032250923",
+    "rollNo": 923,
+    "branch": "Information Technology",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Haroon Tungekar L",
+    "email": "1032251531@tcetmumbai.in",
+    "erpId": "1032251531",
+    "rollNo": 531,
+    "branch": "Computer Engineering",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Bravim Singh",
+    "email": "rajbhai8286@gmail.com",
+    "erpId": "1032259000",
+    "rollNo": 0,
+    "branch": "Electronics & Telecommunication",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Rajkumar Upadhyay",
+    "email": "upadhyayrajkumar060@gmail.com",
+    "erpId": "1032259001",
+    "rollNo": 1,
+    "branch": "Artificial Intelligence & Data Science",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Abhishek Gupta",
+    "email": "abhishekgupta8arollno29@gmail.com",
+    "erpId": "1032259002",
+    "rollNo": 29,
+    "branch": "Artificial Intelligence & Machine Learning",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Sarthak Sunil Katariya",
+    "email": "sarthakkatariya9421@gmail.com",
+    "erpId": "1032259003",
+    "rollNo": 3,
+    "branch": "Mechanical Engineering",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Kunal Kajal Ghorui",
+    "email": "ghorui.kunal.06@gmail.com",
+    "erpId": "1032259004",
+    "rollNo": 4,
+    "branch": "Information Technology",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Krishna Rajaram Maurya",
+    "email": "mk.krishna1999.26@gmail.com",
+    "erpId": "1032259005",
+    "rollNo": 5,
+    "branch": "Computer Engineering",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Tushar Hundalekar",
+    "email": "tusharhundalekar.0101@gmail.com",
+    "erpId": "1032259006",
+    "rollNo": 6,
+    "branch": "Electronics & Telecommunication",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Anhik",
+    "email": "anhikmainacount@gmail.com",
+    "erpId": "1032259007",
+    "rollNo": 7,
+    "branch": "Artificial Intelligence & Data Science",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Ritesh Kocheri",
+    "email": "riteshkocheri@gmail.com",
+    "erpId": "1032259008",
+    "rollNo": 8,
+    "branch": "Artificial Intelligence & Machine Learning",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Saumya Vishwakarma",
+    "email": "vsaumya672@gmail.com",
+    "erpId": "1032259009",
+    "rollNo": 9,
+    "branch": "Mechanical Engineering",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Kushal Mishra",
+    "email": "kushal.mishra2207@gmail.com",
+    "erpId": "1032259010",
+    "rollNo": 10,
+    "branch": "Information Technology",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Siddhi",
+    "email": "siddhivrinda@gmail.com",
+    "erpId": "1032259011",
+    "rollNo": 11,
+    "branch": "Computer Engineering",
+    "year": "Third Year",
+    "division": "B"
+  },
+  {
+    "name": "Tusharhundalekar.0101@gmail.com",
+    "email": "tusharhundalekar.0101@gmail.com",
+    "erpId": "1032259012",
+    "rollNo": 12,
+    "branch": "Electronics & Telecommunication",
+    "year": "Third Year",
+    "division": "C"
+  },
+  {
+    "name": "Harshal Bane",
+    "email": "harshalbanework@gmail.com",
+    "erpId": "1032259013",
+    "rollNo": 13,
+    "branch": "Artificial Intelligence & Data Science",
+    "year": "Third Year",
+    "division": "A"
+  },
+  {
+    "name": "Abhay Vishwakarma",
+    "email": "1032251955@tcetmumbai.in",
+    "erpId": "1032251955",
+    "rollNo": 45,
+    "branch": "Artificial Intelligence and Data Science",
+    "year": "Second Year",
+    "division": "D",
+    "contactNumber": "99600075669",
+    "password": "12345678"
+  }
+]
