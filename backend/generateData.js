@@ -67,6 +67,7 @@ const generateMockData = async () => {
         password: hashedPassword,
         name: student.name,
         email: student.email,
+        rollNo: student.rollNo || 0,
         branch: student.branch || 'Computer Engineering',
         year: student.year || 'Third Year',
         division: student.division || 'A',

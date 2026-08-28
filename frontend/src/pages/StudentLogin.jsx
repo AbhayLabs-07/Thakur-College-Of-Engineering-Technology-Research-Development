@@ -35,6 +35,7 @@ const StudentLogin = () => {
       localStorage.setItem('division', data.division);
       localStorage.setItem('email', data.email);
       localStorage.setItem('contactNumber', data.contactNumber);
+      localStorage.setItem('rollNo', data.rollNo);
 
       navigate('/student-dashboard');
     } catch (err) {

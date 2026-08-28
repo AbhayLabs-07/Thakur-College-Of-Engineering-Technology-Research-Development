@@ -43,6 +43,10 @@ const studentSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  rollNo: {
+    type: Number,
+    required: true
+  },
   role: {
     type: String,
     required: true,

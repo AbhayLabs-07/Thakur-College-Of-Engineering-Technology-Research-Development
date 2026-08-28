@@ -39,6 +39,7 @@ router.post('/student/login', async (req, res) => {
         contactNumber: student.contactNumber,
         erpId: student.erpId,
         userId: student.userId,
+        rollNo: student.rollNo,
         branch: student.branch,
         division: student.division,
         role: 'student',
