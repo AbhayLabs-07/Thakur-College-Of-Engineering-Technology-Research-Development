@@ -98,21 +98,21 @@ const Landing = () => {
           </span>
         </div>
 
-        {/* About Section featuring Dr. Vinit Kumar Dongare */}
+        {/* About Section featuring Dr. Vinitkumar Dongre */}
         <div className="bg-white border-2 border-slate-300 p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 shadow-sm">
-          {/* Dr. Vinit Kumar Dongare Image & Details */}
+          {/* Dr. Vinitkumar Dongre Image & Details */}
           <div className="text-center lg:border-r border-slate-200 lg:pr-8 flex flex-col items-center justify-center">
             <div className="border-2 border-tcet-navy p-1 bg-white mb-4">
               <img 
                 src="/vini_dongre.jpg" 
-                alt="Dr. Vinit Kumar Dongare" 
+                alt="Dr. Vinitkumar Dongre" 
                 className="w-44 h-48 object-cover filter contrast-105"
                 onError={(e) => {
                   e.target.src = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&q=80'; // fallback
                 }}
               />
             </div>
-            <h4 className="font-bold text-lg text-tcet-navy">Dr. Vinit Kumar Dongare</h4>
+            <h4 className="font-bold text-lg text-tcet-navy">Dr. Vinitkumar Dongre</h4>
             <p className="text-xs text-tcet-gold font-extrabold uppercase tracking-wide">Professor & Dean R&D</p>
             <p className="text-[10px] text-tcet-mutedText mt-1">Thakur College of Engineering & Technology</p>
           </div>
@@ -123,7 +123,7 @@ const Landing = () => {
               Center of Excellence (CoE) Laboratory Infrastructure
             </h4>
             <p className="text-xs text-slate-700 leading-relaxed">
-              The Research and Development (R&D) Cell at Thakur College of Engineering and Technology (TCET), under the expert guidance and leadership of <strong>Dr. Vinit Kumar Dongare</strong>, is committed to fostering academic research, innovation, and technological advancements.
+              The Research and Development (R&D) Cell at Thakur College of Engineering and Technology (TCET), under the expert guidance and leadership of <strong>Dr. Vinitkumar Dongre</strong>, is committed to fostering academic research, innovation, and technological advancements.
             </p>
             <p className="text-xs text-slate-700 leading-relaxed">
               The Center of Excellence (CoE) laboratory facility serves as a state-of-the-art incubation hub where students and faculty mentors collaborate on engineering prototypes and core research publications. This smart inventory portal allows the cell to maintain accountability, manage and distribute hardware components (such as IoT microcontrollers, telemetry systems, high-precision sensors, and actuators) seamlessly.

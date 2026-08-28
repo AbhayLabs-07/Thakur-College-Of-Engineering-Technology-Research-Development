@@ -32,7 +32,7 @@ const seedAdminAndFaculty = async () => {
     const saltFaculty = await bcrypt.genSalt(10);
     const facultyData = [
       {
-        name: 'Dr. Vinit Kumar Dongare',
+        name: 'Dr. Vinitkumar Dongre',
         email: 'vini.dongre@tcetmumbai.in',
         password: await bcrypt.hash('Faculty@VINI#2026', saltFaculty),
         department: 'Research and Development',

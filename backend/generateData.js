@@ -305,7 +305,7 @@ const generateMockData = async () => {
       throw new Error('Seed faculty first using npm run seed!');
     }
 
-    const mentor = facultyList[0]; // Dr. Vinit Kumar Dongare
+    const mentor = facultyList[0]; // Dr. Vinitkumar Dongre
     const student = createdStudents[0];
 
     const compPi5 = createdComponents.find(c => c.name.includes('Pi 5'));
