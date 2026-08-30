@@ -1,8 +1,21 @@
 import express from 'express';
 import BorrowRecord from '../models/BorrowRecord.js';
+import Faculty from '../models/Faculty.js';
 import { protect, facultyOnly } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
+
+// @desc    Get all faculty members for the roster
+// @route   GET /api/faculty/roster
+// @access  Private/Faculty
+router.get('/roster', protect, facultyOnly, async (req, res) => {
+  try {
+    const roster = await Faculty.find({}).select('name designation department specialization email');
+    res.json(roster);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 // @desc    Get pending borrow requests assigned to logged-in faculty
 // @route   GET /api/faculty/pending

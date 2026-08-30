@@ -13,7 +13,7 @@ const router = express.Router();
 // @access  Private/Student
 router.get('/mentors', protect, studentOnly, async (req, res) => {
   try {
-    const mentors = await Faculty.find({}).select('name email department designation');
+    const mentors = await Faculty.find({}).select('name email department designation specialization');
     res.json(mentors);
   } catch (error) {
     res.status(500).json({ message: error.message });

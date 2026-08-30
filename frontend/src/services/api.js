@@ -93,6 +93,10 @@ export const facultyService = {
   decide: async (id, approved, remarks) => {
     const res = await API.put(`/faculty/decide/${id}`, { approved, remarks });
     return res.data;
+  },
+  getRoster: async () => {
+    const res = await API.get('/faculty/roster');
+    return res.data;
   }
 };
 

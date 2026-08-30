@@ -8,8 +8,9 @@ const facultySchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: false,
     unique: true,
+    sparse: true,
     lowercase: true,
     trim: true
   },
@@ -19,7 +20,7 @@ const facultySchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: false
   },
   department: {
     type: String,
@@ -32,6 +33,11 @@ const facultySchema = new mongoose.Schema({
     required: true,
     trim: true,
     default: 'Assistant Professor'
+  },
+  specialization: {
+    type: String,
+    default: '',
+    trim: true
   },
   assignedDivisions: {
     type: [String],
