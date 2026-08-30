@@ -100,7 +100,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 10,
         quantityAvailable: 10,
-        imageUrl: 'https://images.unsplash.com/photo-1707923769941-86a01499538c?w=500&q=80',
+        imageUrl: '/Photos/Raspberry Pi 4 Model B.png',
         keywords: ['raspberry pi 5', 'pi 5', 'computer', 'broadcom', 'linux', 'python', 'edge ai', 'server'],
         description: 'The latest generation flagship single-board computer from Raspberry Pi. Delivers over 2-3x CPU and GPU performance compared to Pi 4. Ideal for high-end processing, machine learning, and automation.'
       },
@@ -116,7 +116,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 15,
         quantityAvailable: 14,
-        imageUrl: 'https://images.unsplash.com/photo-1618683515091-bf9a91012903?w=500&q=80',
+        imageUrl: '/Photos/Raspberry Pi 4 Model B.png',
         keywords: ['raspberry pi 4', 'pi 4', 'computer', 'linux', 'server', 'python', 'embedded'],
         description: 'Popular high-performance single-board computer. Suitable for embedded gateway nodes, computer vision servers, and laboratory coding sandboxes.'
       },
@@ -132,7 +132,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 8,
         quantityAvailable: 8,
-        imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80',
+        imageUrl: '/Photos/Raspberry Pi 4 Model B.png',
         keywords: ['raspberry pi 3', 'pi 3', 'computer', 'linux', 'legacy', 'embedded'],
         description: 'Standard single-board computer suitable for entry-level projects, basic terminal applications, and lightweight sensor hubs.'
       },
@@ -148,7 +148,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 5,
         quantityAvailable: 5,
-        imageUrl: 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=500&q=80',
+        imageUrl: '/Photos/Nvidia Jetson Nano Developer Kit.png',
         keywords: ['jetson nano', 'nvidia', 'gpu', 'cuda', 'ai', 'computer vision', 'deep learning', 'tensorrt'],
         description: 'A powerful small-form computer that runs multiple neural networks in parallel. Designed for edge AI, object classification, segments estimation, and speech processing.'
       },
@@ -163,7 +163,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 25,
         quantityAvailable: 23,
-        imageUrl: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=500&q=80',
+        imageUrl: '/Photos/ESP-WROOM-32 .png',
         keywords: ['esp32', 'nodemcu', 'wifi', 'bluetooth', 'microcontroller', 'iot', 'smart home'],
         description: 'Classic dual-core ESP32 board. Perfect for IoT prototyping, custom sensors interfaces, and home automation systems.'
       },
@@ -178,7 +178,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 20,
         quantityAvailable: 20,
-        imageUrl: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=500&q=80',
+        imageUrl: '/Photos/ESP-WROOM-32 .png',
         keywords: ['esp32s', 'esp32-s', 'microcontroller', 'module', 'embedded'],
         description: 'ESP32S module mounted on breakout board, offering high integration density for custom PCBs and IoT designs.'
       },
@@ -193,7 +193,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 20,
         quantityAvailable: 20,
-        imageUrl: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=500&q=80',
+        imageUrl: '/Photos/ESP-WROOM-32 .png',
         keywords: ['esp32w', 'wroom', 'esp32-wroom', 'wifi module'],
         description: 'Standard, highly certified Wi-Fi + BT + BLE MCU module. Highly recommended for industrial sensor nodes and enterprise-grade IoT endpoints.'
       },
@@ -208,7 +208,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 15,
         quantityAvailable: 15,
-        imageUrl: 'https://images.unsplash.com/photo-1563770660941-20978e870e26?w=500&q=80',
+        imageUrl: '/Photos/ESP-WROOM-32 .png',
         keywords: ['esp32se', 'esp32-s3', 's3', 'neural network', 'vector', 'octal psram'],
         description: 'High performance ESP32-S3 module designed for Edge AI speech detection, wake word recognition, and neural network prototyping.'
       },
@@ -223,7 +223,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 15,
         quantityAvailable: 15,
-        imageUrl: 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=500&q=80',
+        imageUrl: '/Photos/esp32-cam module.png',
         keywords: ['espcam', 'esp32-cam', 'camera', 'video streaming', 'face recognition', 'ov2640'],
         description: 'Low-cost ESP32 module carrying an OV2640 camera lens, MicroSD card slot, and built-in flashlight. Excellent for smart doors, face recognition, and streaming.'
       },
@@ -238,7 +238,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 50,
         quantityAvailable: 50,
-        imageUrl: 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=500&q=80',
+        imageUrl: '/Photos/Male to Male Jumper Wires 40Pcs 20cm.png',
         keywords: ['jumper wire', 'male-to-male', 'cable', 'connector', 'breadboard', 'wiring'],
         description: 'Ribbon set of 40 individual male-to-male jumper wires. Essential for establishing paths between breadboards and microcontroller sockets.'
       },
@@ -253,7 +253,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 50,
         quantityAvailable: 50,
-        imageUrl: 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=500&q=80',
+        imageUrl: '/Photos/20CM DuPont Wire Color Jumper Cable 2.54mm 1P-1P Female to Female.png',
         keywords: ['jumper wire', 'female-to-female', 'cable', 'connector', 'sensor wiring'],
         description: 'Ribbon set of 40 individual female-to-female jumper wires. Ideal for connecting standalone sensor pins directly to male pin headers on development boards.'
       },
@@ -268,7 +268,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 30,
         quantityAvailable: 30,
-        imageUrl: 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=500&q=80',
+        imageUrl: '/Photos/Cable for Arduino UNO MEGA .png',
         keywords: ['arduino connector', 'usb-ab', 'uno cable', 'mega cable', 'usb cable'],
         description: 'Standard USB Type-A to Type-B connector cable to power and upload sketches to Arduino Uno and Arduino Mega microcontrollers.'
       },
@@ -283,7 +283,7 @@ const generateMockData = async () => {
         },
         quantityTotal: 40,
         quantityAvailable: 40,
-        imageUrl: 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=500&q=80',
+        imageUrl: '/Photos/Code Uploading Cable Micro USB.png',
         keywords: ['code uploading cable', 'micro usb', 'usb-c', 'esp32 cable', 'type-c', 'programming cable'],
         description: 'Reliable, braid-reinforced data cable carrying both Micro-USB and USB-C connectors. Optimized for uploading firmware code onto ESP32 and NodeMCU boards.'
       },
@@ -298,9 +298,40 @@ const generateMockData = async () => {
         },
         quantityTotal: 20,
         quantityAvailable: 20,
-        imageUrl: 'https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=500&q=80',
+        imageUrl: '/Photos/Breadboard.png',
         keywords: ['connecting cable', 'hookup wire', 'breadboard wires', 'solid core'],
         description: 'Compartment box carrying 140 pre-stripped and pre-bent solid-core hookup wires of varying lengths to construct clean, flat circuits on breadboards.'
+      },
+      {
+        name: 'Arduino Uno R3',
+        category: 'Microcontroller',
+        specs: {
+          'Microcontroller': 'ATmega328P',
+          'Operating Voltage': '5V',
+          'Input Voltage': '7-12V',
+          'Digital I/O Pins': '14 (of which 6 provide PWM output)',
+          'Analog Input Pins': '6'
+        },
+        quantityTotal: 20,
+        quantityAvailable: 20,
+        imageUrl: '/Photos/Arduino Uno.png',
+        keywords: ['arduino uno', 'uno', 'avr', 'atmega328p', 'microcontroller', 'starter'],
+        description: 'The industry-standard Arduino Uno R3. Easy to use, robust, and ideal for learning electronics and coding basic prototypes.'
+      },
+      {
+        name: 'TowerPro SG90 Servo Motor (180° Rotation)',
+        category: 'Actuator',
+        specs: {
+          'Operating Speed': '0.12s/60 degrees (4.8V)',
+          'Stall Torque': '1.6 kg-cm (4.8V)',
+          'Operating Voltage': '4.8V - 6.0V',
+          'Rotation Angle': '180 degrees'
+        },
+        quantityTotal: 30,
+        quantityAvailable: 30,
+        imageUrl: '/Photos/TowerPro SG90 Servo Motor (180° Rotation).png',
+        keywords: ['servo motor', 'sg90', 'towerpro', 'actuator', 'motor', 'rotation'],
+        description: 'Tiny and lightweight 9g servo motor. Great for robotics, robotic arms, remote control vehicles, and position steering control.'
       }
     ];
 
