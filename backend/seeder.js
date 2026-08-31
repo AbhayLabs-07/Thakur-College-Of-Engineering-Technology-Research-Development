@@ -19,16 +19,17 @@ const seedAdminAndFaculty = async () => {
 
     // Seed Admin
     const saltAdmin = await bcrypt.genSalt(10);
-    const hashedAdminPassword = await bcrypt.hash('admin123', saltAdmin);
+    const hashedAdminPassword = await bcrypt.hash('RNDTCET@2026', saltAdmin);
 
     await Admin.create({
-      name: 'System Administrator',
+      name: 'Ashish Mudholkar',
+      email: 'ashish.mudholkar75@gmail.com',
       contactNumber: '9920123456',
-      username: 'admin',
+      username: 'Admin',
       password: hashedAdminPassword,
       role: 'admin'
     });
-    console.log('Default Admin seeded successfully (User: admin / Pass: admin123)');
+    console.log('Default Admin seeded successfully (Name: Ashish Mudholkar / User: Admin / Email: ashish.mudholkar75@gmail.com / Pass: RNDTCET@2026)');
 
     // Seed Faculty Mentors
     const saltFaculty = await bcrypt.genSalt(10);

@@ -5,7 +5,14 @@ const adminSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    default: 'System Administrator'
+    default: 'Ashish Mudholkar'
+  },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+    default: 'ashish.mudholkar75@gmail.com'
   },
   contactNumber: {
     type: String,
@@ -16,7 +23,7 @@ const adminSchema = new mongoose.Schema({
     required: true,
     unique: true,
     trim: true,
-    default: 'admin'
+    default: 'Admin'
   },
   password: {
     type: String,

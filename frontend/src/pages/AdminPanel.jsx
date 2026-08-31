@@ -38,6 +38,15 @@ const AdminPanel = () => {
   useEffect(() => {
     fetchRecords();
     fetchComponents();
+    authService.getProfile().then(data => {
+      if (data && (data.user || data.name)) {
+        const u = data.user || data;
+        if (u.name) localStorage.setItem('name', u.name);
+        if (u.username) localStorage.setItem('username', u.username);
+        if (u.email) localStorage.setItem('email', u.email);
+        if (u.contactNumber) localStorage.setItem('contactNumber', u.contactNumber);
+      }
+    }).catch(() => {});
   }, []);
 
   const showNotify = (text, type = 'success') => {
@@ -208,15 +217,19 @@ const AdminPanel = () => {
         <div className="max-w-7xl mx-auto flex flex-wrap gap-y-2 gap-x-6 text-[11px] text-slate-700 items-center">
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">Admin:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{localStorage.getItem('name')}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold text-slate-900">{localStorage.getItem('name') || 'Ashish Mudholkar'}</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="font-bold text-tcet-navy">Username:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('username')}</span>
+            <span className="font-bold text-tcet-navy">Email:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono text-tcet-navy font-semibold">{localStorage.getItem('email') || 'ashish.mudholkar75@gmail.com'}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-tcet-navy">User ID / Username:</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono font-bold text-slate-900">{localStorage.getItem('username') || 'Admin'}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">Contact Number:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('contactNumber') || 'N/A'}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('contactNumber') || '+91 9920123456'}</span>
           </div>
         </div>
       </div>

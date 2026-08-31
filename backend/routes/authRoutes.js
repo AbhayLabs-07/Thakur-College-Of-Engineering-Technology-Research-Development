@@ -96,12 +96,20 @@ router.post('/admin/login', async (req, res) => {
   }
 
   try {
-    const admin = await Admin.findOne({ username });
+    const searchIdentifier = username.trim();
+    // Allow login by Username or Email (case-insensitive)
+    const admin = await Admin.findOne({
+      $or: [
+        { username: { $regex: new RegExp(`^${searchIdentifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } },
+        { email: { $regex: new RegExp(`^${searchIdentifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }
+      ]
+    });
 
     if (admin && (await bcrypt.compare(password, admin.password))) {
       res.json({
         _id: admin._id,
         name: admin.name,
+        email: admin.email,
         contactNumber: admin.contactNumber,
         username: admin.username,
         role: 'admin',
@@ -123,6 +131,9 @@ router.get('/profile', protect, async (req, res) => {
     res.json({
       _id: req.user._id,
       name: req.user.name || req.user.username,
+      email: req.user.email,
+      username: req.user.username,
+      contactNumber: req.user.contactNumber,
       role: req.userRole,
       user: req.user
     });

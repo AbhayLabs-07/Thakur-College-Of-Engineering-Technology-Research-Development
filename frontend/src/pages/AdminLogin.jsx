@@ -30,6 +30,7 @@ const AdminLogin = () => {
       localStorage.setItem('role', 'admin');
       localStorage.setItem('name', data.name);
       localStorage.setItem('username', data.username);
+      localStorage.setItem('email', data.email || 'ashish.mudholkar75@gmail.com');
       localStorage.setItem('contactNumber', data.contactNumber);
 
       navigate('/admin-panel');
@@ -74,11 +75,11 @@ const AdminLogin = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-tcet-navy uppercase tracking-wider mb-1">
-                  Admin Username
+                  Admin User ID / Username or Email
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. admin"
+                  placeholder="e.g. Admin or ashish.mudholkar75@gmail.com"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full px-4 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-sm transition-all"

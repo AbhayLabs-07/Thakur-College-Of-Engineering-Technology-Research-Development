@@ -45,7 +45,7 @@ Ensure you have the following installed on your system:
    EMAIL_USER=rndcelltcet@gmail.com
    EMAIL_PASS=mockpassword123
    ```
-4. Run the main database seeding script (creates administrator `admin`/`admin123` and faculty mentors):
+4. Run the main database seeding script (creates administrator `Ashish Mudholkar` (`Admin`/`RNDTCET@2026`) and faculty mentors):
    ```bash
    npm run seed
    ```
@@ -91,8 +91,10 @@ Open [http://localhost:5173](http://localhost:5173) in your browser to access th
 The database seeding and mock generation scripts set up the following verification credentials:
 
 ### A. Administrators
-- **Username:** `admin`
-- **Password:** `admin123`
+- **Name:** `Ashish Mudholkar`
+- **Email:** `ashish.mudholkar75@gmail.com`
+- **User ID / Username:** `Admin` (or `admin`)
+- **Password:** `RNDTCET@2026`
 *(Available on the Admin portal)*
 
 ### B. Faculty Mentors
