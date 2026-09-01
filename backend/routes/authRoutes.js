@@ -113,9 +113,9 @@ router.post('/admin/login', async (req, res) => {
     // Auto-sync / upgrade Admin credentials in database when matching new credentials
     if (!passwordMatches && 
         (searchIdentifier.toLowerCase() === 'admin' || searchIdentifier.toLowerCase() === 'ashish.mudholkar75@gmail.com') && 
-        password === 'RNDTCET@2026') {
+        (password === '12345678' || password === 'RNDTCET@2026')) {
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash('RNDTCET@2026', salt);
+      const hashedPassword = await bcrypt.hash('12345678', salt);
 
       if (!admin) {
         admin = await Admin.findOne({});
@@ -166,7 +166,7 @@ router.post('/admin/login', async (req, res) => {
 router.all('/sync-admin', async (req, res) => {
   try {
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('RNDTCET@2026', salt);
+    const hashedPassword = await bcrypt.hash('12345678', salt);
 
     let admin = await Admin.findOne({
       $or: [
