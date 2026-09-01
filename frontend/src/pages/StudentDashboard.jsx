@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Plus, Trash2, Search, Filter, ShoppingCart, 
-  HelpCircle, RefreshCw, Layers, History, Award, CheckCircle2, Copy, ArrowLeft
+  HelpCircle, RefreshCw, Layers, History, Award, CheckCircle2, Copy, ArrowLeft,
+  UserCheck, X, Check, Users
 } from 'lucide-react';
 import Header from '../components/Header';
 import ComponentCard from '../components/ComponentCard';
@@ -22,6 +23,9 @@ const StudentDashboard = () => {
   const [projectDescription, setProjectDescription] = useState('');
   const [facultyMentorId, setFacultyMentorId] = useState('');
   const [mentors, setMentors] = useState([]);
+  const [facultySearchTerm, setFacultySearchTerm] = useState('');
+  const [isMentorDropdownOpen, setIsMentorDropdownOpen] = useState(false);
+  const mentorDropdownRef = useRef(null);
   
   // Team members list
   const [teamMembers, setTeamMembers] = useState([]);
@@ -100,6 +104,37 @@ const StudentDashboard = () => {
       setHistoryLoading(false);
     }
   };
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (mentorDropdownRef.current && !mentorDropdownRef.current.contains(event.target)) {
+        setIsMentorDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSelectMentor = (mentor) => {
+    setFacultyMentorId(mentor._id);
+    setFacultySearchTerm(mentor.name);
+    setIsMentorDropdownOpen(false);
+  };
+
+  const handleClearMentor = () => {
+    setFacultyMentorId('');
+    setFacultySearchTerm('');
+    setIsMentorDropdownOpen(false);
+  };
+
+  const selectedMentor = mentors.find(m => m._id === facultyMentorId);
+
+  // Closest matching faculty suggestions
+  const filteredMentors = mentors.filter(m => {
+    if (!facultySearchTerm.trim()) return true;
+    return m.name.toLowerCase().includes(facultySearchTerm.trim().toLowerCase());
+  });
 
   // Get recommendations on demand when project details are provided
   const handleGetRecommendations = async () => {
@@ -232,6 +267,8 @@ const StudentDashboard = () => {
       setProjectDomain('');
       setProjectDescription('');
       setFacultyMentorId('');
+      setFacultySearchTerm('');
+      setIsMentorDropdownOpen(false);
       setTeamMembers([]);
       setWizardStep(1);
     } catch (err) {
@@ -391,20 +428,89 @@ const StudentDashboard = () => {
                       className="w-full px-4 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-tcet-navy uppercase tracking-wider mb-1.5">Faculty Mentor Reviewer</label>
-                    <select
-                      value={facultyMentorId}
-                      onChange={(e) => setFacultyMentorId(e.target.value)}
-                      className="w-full px-3 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs bg-white"
-                    >
-                      <option value="">-- Choose Assigned Reviewer --</option>
-                      {mentors.map(mentor => (
-                        <option key={mentor._id} value={mentor._id}>
-                          {mentor.name} ({mentor.designation} - {mentor.department})
-                        </option>
-                      ))}
-                    </select>
+                  <div className="relative" ref={mentorDropdownRef}>
+                    <label className="block text-xs font-bold text-tcet-navy uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                      <span>Faculty Mentor Reviewer</span>
+                      <span className="text-[10px] text-tcet-mutedText lowercase font-normal">search by name</span>
+                    </label>
+
+                    {selectedMentor ? (
+                      <div className="p-2.5 bg-slate-50 border-2 border-tcet-navy flex items-center justify-between shadow-sm">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-full bg-tcet-navy text-tcet-gold flex items-center justify-center flex-shrink-0 font-bold text-xs">
+                            <UserCheck className="w-3.5 h-3.5" />
+                          </div>
+                          <div>
+                            <p className="font-extrabold text-xs text-tcet-navy leading-tight">{selectedMentor.name}</p>
+                            <p className="text-[11px] text-slate-600 font-medium">{selectedMentor.department}</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleClearMentor}
+                          className="text-xs text-slate-600 hover:text-red-700 font-bold px-2 py-1 border border-slate-300 hover:border-red-400 bg-white transition-all uppercase"
+                          title="Change Faculty Mentor"
+                        >
+                          Change
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <Search className="w-4 h-4" />
+                          </span>
+                          <input
+                            type="text"
+                            placeholder="Type faculty name (e.g. Dr. Vinitkumar, Harsh)..."
+                            value={facultySearchTerm}
+                            onChange={(e) => {
+                              setFacultySearchTerm(e.target.value);
+                              setIsMentorDropdownOpen(true);
+                            }}
+                            onFocus={() => setIsMentorDropdownOpen(true)}
+                            className="w-full pl-9 pr-8 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs bg-white"
+                          />
+                          {facultySearchTerm && (
+                            <button
+                              type="button"
+                              onClick={handleClearMentor}
+                              className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Autocomplete Suggestions Dropdown */}
+                        {isMentorDropdownOpen && (
+                          <div className="absolute z-30 mt-1 w-full bg-white border-2 border-slate-300 shadow-xl max-h-60 overflow-y-auto divide-y divide-slate-100">
+                            {filteredMentors.length === 0 ? (
+                              <div className="p-3 text-xs text-slate-500 text-center">
+                                No matching faculty found for "{facultySearchTerm}"
+                              </div>
+                            ) : (
+                              filteredMentors.map((mentor) => (
+                                <button
+                                  key={mentor._id}
+                                  type="button"
+                                  onClick={() => handleSelectMentor(mentor)}
+                                  className="w-full text-left p-3 hover:bg-slate-50 flex items-center justify-between transition-colors text-xs"
+                                >
+                                  <div>
+                                    <p className="font-bold text-slate-800 text-xs">{mentor.name}</p>
+                                    <p className="text-[11px] text-slate-500">{mentor.department}</p>
+                                  </div>
+                                  <span className="text-[10px] text-tcet-navy font-bold uppercase bg-slate-100 px-2 py-0.5 border border-slate-200">
+                                    Select
+                                  </span>
+                                </button>
+                              ))
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -545,7 +651,7 @@ const StudentDashboard = () => {
                 <span className="font-extrabold text-sm">{projectTitle}</span>
                 <span className="text-slate-400"> | Domain: </span><span className="font-medium text-slate-200">{projectDomain}</span>
                 <span className="text-slate-400"> | Mentor: </span><span className="font-medium text-slate-200">
-                  {mentors.find(m => m._id === facultyMentorId)?.name || 'N/A'}
+                  {selectedMentor ? `${selectedMentor.name} (${selectedMentor.department})` : (mentors.find(m => m._id === facultyMentorId)?.name || 'N/A')}
                 </span>
                 {teamMembers.length > 0 && (
                   <span className="text-slate-400"> | Teammates: </span>
@@ -760,7 +866,7 @@ const StudentDashboard = () => {
                       
                       <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-600">
                         <p><strong>Domain:</strong> {record.projectDomain}</p>
-                        <p><strong>Mentor:</strong> {record.facultyMentor?.name}</p>
+                        <p><strong>Mentor:</strong> {record.facultyMentor?.name} {record.facultyMentor?.department ? `(${record.facultyMentor.department})` : ''}</p>
                         <p><strong>Requested on:</strong> {new Date(record.requestedAt).toLocaleDateString()}</p>
                         <p><strong>Return Due:</strong> <span className="font-semibold text-red-600">{new Date(record.dueDate).toLocaleDateString()}</span></p>
                       </div>

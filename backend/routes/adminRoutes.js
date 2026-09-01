@@ -5,12 +5,29 @@ import { fileURLToPath } from 'url';
 import BorrowRecord from '../models/BorrowRecord.js';
 import Component from '../models/Component.js';
 import Student from '../models/Student.js';
+import Faculty from '../models/Faculty.js';
 import { protect, adminOnly } from '../middleware/authMiddleware.js';
 import { convertToCSV } from '../utils/csvExporter.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// @desc    Get all faculty members and total count (Admin only)
+// @route   GET /api/admin/faculty
+// @access  Private/Admin
+router.get('/faculty', protect, adminOnly, async (req, res) => {
+  try {
+    const faculties = await Faculty.find({}).sort({ name: 1 });
+    const count = await Faculty.countDocuments();
+    res.json({
+      count,
+      faculties
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 // @desc    Get all borrow records for live tracking
 // @route   GET /api/admin/records

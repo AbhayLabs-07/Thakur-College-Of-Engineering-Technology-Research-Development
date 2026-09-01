@@ -70,8 +70,8 @@ export const componentService = {
 
 // Student Services
 export const studentService = {
-  getMentors: async () => {
-    const res = await API.get('/students/mentors');
+  getMentors: async (search = '') => {
+    const res = await API.get(`/students/mentors${search ? `?search=${encodeURIComponent(search)}` : ''}`);
     return res.data;
   },
   checkout: async (checkoutData) => {
@@ -93,10 +93,6 @@ export const facultyService = {
   decide: async (id, approved, remarks) => {
     const res = await API.put(`/faculty/decide/${id}`, { approved, remarks });
     return res.data;
-  },
-  getRoster: async () => {
-    const res = await API.get('/faculty/roster');
-    return res.data;
   }
 };
 
@@ -108,6 +104,10 @@ export const adminService = {
   },
   updateStatus: async (id, status, adminNotes) => {
     const res = await API.put(`/admin/records/${id}/status`, { status, adminNotes });
+    return res.data;
+  },
+  getFacultyRoster: async () => {
+    const res = await API.get('/admin/faculty');
     return res.data;
   },
   triggerCronScan: async () => {

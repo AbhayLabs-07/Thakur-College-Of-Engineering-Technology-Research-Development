@@ -8,12 +8,17 @@ import crypto from 'crypto';
 
 const router = express.Router();
 
-// @desc    Get all faculty mentors
+// @desc    Get faculty mentors (Name and Department only for students)
 // @route   GET /api/students/mentors
 // @access  Private/Student
 router.get('/mentors', protect, studentOnly, async (req, res) => {
   try {
-    const mentors = await Faculty.find({}).select('name email department designation specialization');
+    const { search } = req.query;
+    let query = {};
+    if (search && search.trim() !== '') {
+      query.name = { $regex: search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
+    }
+    const mentors = await Faculty.find(query).select('name department').sort({ name: 1 });
     res.json(mentors);
   } catch (error) {
     res.status(500).json({ message: error.message });

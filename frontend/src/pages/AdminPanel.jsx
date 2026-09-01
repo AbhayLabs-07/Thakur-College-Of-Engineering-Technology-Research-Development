@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ShieldAlert, Settings, FileSpreadsheet, Plus, Trash2, Edit2, 
-  Search, RefreshCw, Calendar, Package, ArrowRightLeft, CheckCircle2 
+  Search, RefreshCw, Calendar, Package, ArrowRightLeft, CheckCircle2, Users, GraduationCap
 } from 'lucide-react';
 import Header from '../components/Header';
-import { adminService, componentService } from '../services/api';
+import { adminService, componentService, authService } from '../services/api';
 
 const AdminPanel = () => {
-  const [activeTab, setActiveTab] = useState('tracking'); // 'tracking', 'inventory', 'utilities'
+  const [activeTab, setActiveTab] = useState('tracking'); // 'tracking', 'inventory', 'faculty', 'utilities'
   
   // States
   const [records, setRecords] = useState([]);
   const [components, setComponents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [notifyMsg, setNotifyMsg] = useState({ type: '', text: '' });
+
+  // Faculty Directory states for Admin
+  const [faculties, setFaculties] = useState([]);
+  const [facultyCount, setFacultyCount] = useState(0);
+  const [facultyLoading, setFacultyLoading] = useState(false);
+  const [facultySearch, setFacultySearch] = useState('');
 
   // Inventory form state
   const [isEditing, setIsEditing] = useState(false);
@@ -38,6 +44,7 @@ const AdminPanel = () => {
   useEffect(() => {
     fetchRecords();
     fetchComponents();
+    fetchFaculty();
     authService.getProfile().then(data => {
       if (data && (data.user || data.name)) {
         const u = data.user || data;
@@ -73,6 +80,20 @@ const AdminPanel = () => {
       setComponents(data);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const fetchFaculty = async () => {
+    setFacultyLoading(true);
+    try {
+      const data = await adminService.getFacultyRoster();
+      setFaculties(data.faculties || []);
+      setFacultyCount(data.count !== undefined ? data.count : (data.faculties?.length || 0));
+    } catch (err) {
+      console.error(err);
+      showNotify('Failed to fetch faculty roster directory.', 'error');
+    } finally {
+      setFacultyLoading(false);
     }
   };
 
@@ -246,8 +267,8 @@ const AdminPanel = () => {
 
       {/* Admin Subheader Navigation */}
       <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-          <div className="flex gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+          <div className="flex flex-wrap gap-2 sm:gap-4">
             <button
               onClick={() => setActiveTab('tracking')}
               className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold uppercase border-b-2 tracking-wide transition-all ${
@@ -271,6 +292,17 @@ const AdminPanel = () => {
               <span>Inventory Editor</span>
             </button>
             <button
+              onClick={() => setActiveTab('faculty')}
+              className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold uppercase border-b-2 tracking-wide transition-all ${
+                activeTab === 'faculty' 
+                  ? 'border-tcet-navy text-tcet-navy' 
+                  : 'border-transparent text-tcet-mutedText hover:text-tcet-navy'
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              <span>Faculty Directory</span>
+            </button>
+            <button
               onClick={() => setActiveTab('utilities')}
               className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold uppercase border-b-2 tracking-wide transition-all ${
                 activeTab === 'utilities' 
@@ -285,6 +317,9 @@ const AdminPanel = () => {
 
           {/* Quick Stats Display */}
           <div className="hidden md:flex gap-4 text-xs font-mono">
+            <span className="bg-blue-50 text-blue-900 px-2.5 py-1 border border-blue-200">
+              Total Faculties: <strong>{facultyCount}</strong>
+            </span>
             <span className="bg-slate-100 text-slate-700 px-2.5 py-1 border border-slate-200">
               Active Loans: <strong>{records.filter(r => r.status === 'handed_out').length}</strong>
             </span>
@@ -653,6 +688,120 @@ const AdminPanel = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </main>
+      )}
+
+      {activeTab === 'faculty' && (
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+          <div className="bg-white border-2 border-slate-300 p-6 shadow-sm">
+            
+            {/* Top Bar: Title & Live Count Badge */}
+            <div className="border-b border-slate-200 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="font-extrabold text-sm uppercase text-tcet-navy tracking-wider flex items-center gap-2">
+                  <Users className="w-5 h-5 text-tcet-gold" />
+                  <span>TCET Faculty Directory & Academic Roster (Admin Exclusive)</span>
+                </h3>
+                <p className="text-xs text-tcet-mutedText mt-1">
+                  Full overview of all registered faculties and departments. Restricted to Administrators.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="bg-tcet-navy text-white px-4 py-2 text-xs font-mono font-bold border border-tcet-gold flex items-center gap-2 shadow-sm">
+                  <span>Total Enrolled Faculties:</span>
+                  <span className="text-tcet-gold text-sm font-black">{facultyCount}</span>
+                </div>
+                <button
+                  onClick={fetchFaculty}
+                  className="bg-white hover:bg-slate-50 text-tcet-navy border border-slate-300 p-2 text-xs font-bold transition-all shadow-sm"
+                  title="Refresh Roster"
+                >
+                  <RefreshCw className={`w-4 h-4 ${facultyLoading ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
+            </div>
+
+            {/* Faculty Search Filter */}
+            <div className="relative mb-6">
+              <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="w-4 h-4 text-slate-400" />
+              </span>
+              <input
+                type="text"
+                placeholder="Search faculty by name, department, designation, specialization or email..."
+                value={facultySearch}
+                onChange={(e) => setFacultySearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs"
+              />
+            </div>
+
+            {/* Table or Loading / Empty states */}
+            {facultyLoading ? (
+              <div className="text-center py-20">
+                <div className="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-tcet-navy" role="status"></div>
+                <p className="text-xs text-tcet-mutedText mt-2">Loading faculty roster directory from server...</p>
+              </div>
+            ) : faculties.length === 0 ? (
+              <div className="text-center py-20 border border-dashed border-slate-300">
+                <Users className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+                <p className="text-slate-500 font-semibold text-xs">No faculty records found in database</p>
+                <p className="text-[10px] text-slate-400 mt-1">Run the faculty import or seeder script to populate faculties.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs border border-slate-200">
+                  <thead>
+                    <tr className="bg-tcet-navy text-white uppercase text-[10px] tracking-wider">
+                      <th className="p-3 border border-slate-200 font-black">#</th>
+                      <th className="p-3 border border-slate-200 font-black">Faculty Name</th>
+                      <th className="p-3 border border-slate-200 font-black">Rank / Designation</th>
+                      <th className="p-3 border border-slate-200 font-black">Department</th>
+                      <th className="p-3 border border-slate-200 font-black">Specialization</th>
+                      <th className="p-3 border border-slate-200 font-black">Email Address</th>
+                      <th className="p-3 border border-slate-200 font-black">Contact No</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200 bg-white">
+                    {faculties
+                      .filter(fac => {
+                        const term = facultySearch.toLowerCase();
+                        return (
+                          (fac.name && fac.name.toLowerCase().includes(term)) ||
+                          (fac.department && fac.department.toLowerCase().includes(term)) ||
+                          (fac.designation && fac.designation.toLowerCase().includes(term)) ||
+                          (fac.specialization && fac.specialization.toLowerCase().includes(term)) ||
+                          (fac.email && fac.email.toLowerCase().includes(term))
+                        );
+                      })
+                      .map((fac, idx) => (
+                        <tr key={fac._id || idx} className="hover:bg-slate-50 transition-colors">
+                          <td className="p-3 font-mono text-slate-400 border border-slate-200">{idx + 1}</td>
+                          <td className="p-3 font-extrabold text-slate-800 border border-slate-200">{fac.name}</td>
+                          <td className="p-3 text-slate-700 font-semibold border border-slate-200">{fac.designation || 'Faculty'}</td>
+                          <td className="p-3 text-slate-700 border border-slate-200 font-medium">{fac.department}</td>
+                          <td className="p-3 text-slate-600 border border-slate-200">
+                            {fac.specialization ? (
+                              <span className="font-semibold text-tcet-navy bg-slate-100 px-2 py-0.5 border border-slate-200 rounded-sm">
+                                {fac.specialization}
+                              </span>
+                            ) : (
+                              <span className="text-slate-300 italic">- Not Specified -</span>
+                            )}
+                          </td>
+                          <td className="p-3 text-slate-700 border border-slate-200 font-mono">
+                            {fac.email || <span className="text-slate-300 italic">-</span>}
+                          </td>
+                          <td className="p-3 text-slate-700 border border-slate-200 font-mono">
+                            {fac.contactNumber || <span className="text-slate-300 italic">-</span>}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </main>
       )}
