@@ -5,9 +5,9 @@ import Admin from '../models/Admin.js';
 const ensureAdmin = async () => {
   try {
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('RNDTCET@2026', salt);
+    const hashedPassword = await bcrypt.hash('12345678', salt);
 
-    const admin = await Admin.findOne({
+    let admin = await Admin.findOne({
       $or: [
         { username: { $regex: /^admin$/i } },
         { email: 'ashish.mudholkar75@gmail.com' }

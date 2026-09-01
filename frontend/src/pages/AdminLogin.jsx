@@ -23,15 +23,18 @@ const AdminLogin = () => {
     }
 
     try {
-      const data = await authService.loginAdmin(username.trim(), password);
+      // Clear any prior role sessions (e.g. Faculty/Student)
+      localStorage.clear();
+
+      const data = await authService.loginAdmin(username.trim(), password.trim());
       
       // Save details to localStorage
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', 'admin');
-      localStorage.setItem('name', data.name);
-      localStorage.setItem('username', data.username);
+      localStorage.setItem('name', data.name || 'Ashish Mudholkar');
+      localStorage.setItem('username', data.username || 'Admin');
       localStorage.setItem('email', data.email || 'ashish.mudholkar75@gmail.com');
-      localStorage.setItem('contactNumber', data.contactNumber);
+      localStorage.setItem('contactNumber', data.contactNumber || '');
 
       navigate('/admin-panel');
     } catch (err) {
