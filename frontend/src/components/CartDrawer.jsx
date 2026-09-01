@@ -1,7 +1,7 @@
 import React from 'react';
 import { X, Trash2, ShoppingBag, Plus, Minus } from 'lucide-react';
 
-const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveFromCart, onClearCart, onProceedToCheckout }) => {
+const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveFromCart, onClearCart, onProceedToCheckout, isSubmitting = false }) => {
   if (!isOpen) return null;
 
   return (
@@ -115,9 +115,12 @@ const CartDrawer = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveFrom
               
               <button
                 onClick={onProceedToCheckout}
-                className="w-full py-3 bg-tcet-navy hover:bg-slate-800 text-white font-bold text-sm uppercase tracking-wider border-2 border-tcet-navy transition-all"
+                disabled={isSubmitting}
+                className={`w-full py-3 text-white font-bold text-sm uppercase tracking-wider border-2 border-tcet-navy transition-all ${
+                  isSubmitting ? 'bg-slate-500 cursor-not-allowed opacity-75' : 'bg-tcet-navy hover:bg-slate-800'
+                }`}
               >
-                PROCEED TO CHECKOUT
+                {isSubmitting ? 'SUBMITTING REQUEST...' : 'PROCEED TO CHECKOUT'}
               </button>
             </div>
           )}

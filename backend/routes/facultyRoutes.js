@@ -17,7 +17,19 @@ router.get('/pending', protect, facultyOnly, async (req, res) => {
     .populate('cartItems.component', 'name category specs quantityAvailable imageUrl')
     .sort({ createdAt: -1 });
 
-    res.json(pending);
+    // Deduplicate in response to ensure only 1 clean request card per project submission
+    const seen = new Set();
+    const uniquePending = [];
+    for (const item of pending) {
+      const studentId = item.student?._id?.toString() || item.student?.toString();
+      const key = `${studentId}-${item.projectTitle?.trim().toLowerCase()}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniquePending.push(item);
+      }
+    }
+
+    res.json(uniquePending);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

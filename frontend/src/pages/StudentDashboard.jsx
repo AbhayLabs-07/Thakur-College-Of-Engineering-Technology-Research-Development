@@ -57,6 +57,7 @@ const StudentDashboard = () => {
 
   // Notification message
   const [notifyMsg, setNotifyMsg] = useState({ type: '', text: '' });
+  const [isSubmittingCheckout, setIsSubmittingCheckout] = useState(false);
 
   // Fetch initial data
   useEffect(() => {
@@ -227,6 +228,8 @@ const StudentDashboard = () => {
 
   // Submission Checkout
   const handleCheckoutSubmit = async () => {
+    if (isSubmittingCheckout) return;
+
     if (!facultyMentorId) {
       showNotify('Please select a faculty mentor to review your request.', 'error');
       return;
@@ -248,6 +251,7 @@ const StudentDashboard = () => {
       }))
     };
 
+    setIsSubmittingCheckout(true);
     try {
       const record = await studentService.checkout(payload);
       setCart([]);
@@ -274,6 +278,8 @@ const StudentDashboard = () => {
     } catch (err) {
       console.error(err);
       showNotify(err.response?.data?.message || 'Failed to submit checkout request.', 'error');
+    } finally {
+      setIsSubmittingCheckout(false);
     }
   };
 
@@ -924,6 +930,7 @@ const StudentDashboard = () => {
         onRemoveFromCart={handleRemoveFromCart}
         onClearCart={() => setCart([])}
         onProceedToCheckout={handleCheckoutSubmit}
+        isSubmitting={isSubmittingCheckout}
       />
 
       {/* Token Modal overlay */}

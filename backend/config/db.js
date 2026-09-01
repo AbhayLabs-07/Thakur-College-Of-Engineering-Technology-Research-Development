@@ -119,12 +119,40 @@ const ensureDefaultFaculties = async () => {
   }
 };
 
+import BorrowRecord from '../models/BorrowRecord.js';
+
+const cleanupDuplicateBorrowRecords = async () => {
+  try {
+    const pendingRecords = await BorrowRecord.find({ status: 'pending_faculty' }).sort({ createdAt: 1 });
+    const seen = new Map();
+    const duplicateIds = [];
+
+    for (const record of pendingRecords) {
+      if (!record.student || !record.facultyMentor || !record.projectTitle) continue;
+      const key = `${record.student.toString()}_${record.facultyMentor.toString()}_${record.projectTitle.trim().toLowerCase()}`;
+      if (seen.has(key)) {
+        duplicateIds.push(record._id);
+      } else {
+        seen.set(key, record._id);
+      }
+    }
+
+    if (duplicateIds.length > 0) {
+      await BorrowRecord.deleteMany({ _id: { $in: duplicateIds } });
+      console.log(`Cleaned up ${duplicateIds.length} duplicate pending borrow requests.`);
+    }
+  } catch (err) {
+    console.log('Cleanup notice:', err.message);
+  }
+};
+
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/smart_inventory');
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     await ensureAdmin();
     await ensureDefaultFaculties();
+    await cleanupDuplicateBorrowRecords();
   } catch (error) {
     console.error(`Database Connection Error: ${error.message}`);
     process.exit(1);

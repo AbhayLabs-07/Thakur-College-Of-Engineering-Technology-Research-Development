@@ -43,6 +43,22 @@ router.post('/checkout', protect, studentOnly, async (req, res) => {
   }
 
   try {
+    // Prevent rapid duplicate submissions (within 30 seconds for same student + project)
+    const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
+    const existingRecent = await BorrowRecord.findOne({
+      student: req.user._id,
+      facultyMentor: facultyMentorId,
+      projectTitle: projectTitle.trim(),
+      status: 'pending_faculty',
+      createdAt: { $gte: thirtySecondsAgo }
+    })
+    .populate('facultyMentor', 'name email')
+    .populate('cartItems.component', 'name category imageUrl');
+
+    if (existingRecent) {
+      return res.status(200).json(existingRecent);
+    }
+
     // Verify items in inventory are available in the requested quantities
     for (const item of cartItems) {
       const component = await Component.findById(item.component);
