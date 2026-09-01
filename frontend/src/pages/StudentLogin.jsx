@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api';
-import { ShieldAlert, LogIn, ArrowLeft } from 'lucide-react';
+import { ShieldAlert, LogIn, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import Header from '../components/Header';
 
 const StudentLogin = () => {
   const navigate = useNavigate();
   const [loginId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +24,10 @@ const StudentLogin = () => {
     }
 
     try {
-      const data = await authService.loginStudent(loginId.trim(), password);
+      // Clear prior sessions
+      localStorage.clear();
+
+      const data = await authService.loginStudent(loginId.trim(), password.trim());
       
       // Save details to localStorage
       localStorage.setItem('token', data.token);
@@ -34,8 +38,8 @@ const StudentLogin = () => {
       localStorage.setItem('branch', data.branch);
       localStorage.setItem('division', data.division);
       localStorage.setItem('email', data.email);
-      localStorage.setItem('contactNumber', data.contactNumber);
-      localStorage.setItem('rollNo', data.rollNo);
+      localStorage.setItem('contactNumber', data.contactNumber || '');
+      localStorage.setItem('rollNo', data.rollNo || '');
 
       navigate('/student-dashboard');
     } catch (err) {
@@ -95,14 +99,25 @@ const StudentLogin = () => {
                 <label className="block text-xs font-bold text-tcet-navy uppercase tracking-wider mb-1">
                   Password
                 </label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-sm transition-all"
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-4 pr-10 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-sm transition-all"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-tcet-navy transition-colors focus:outline-none"
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                    tabIndex="-1"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               <div className="pt-2">

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api';
-import { ShieldAlert, LogIn, ArrowLeft } from 'lucide-react';
+import { ShieldAlert, LogIn, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import Header from '../components/Header';
 
 const FacultyLogin = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +24,10 @@ const FacultyLogin = () => {
     }
 
     try {
-      const data = await authService.loginFaculty(email.trim(), password);
+      // Clear prior sessions
+      localStorage.clear();
+
+      const data = await authService.loginFaculty(email.trim(), password.trim());
       
       // Save details to localStorage
       localStorage.setItem('token', data.token);
@@ -32,7 +36,7 @@ const FacultyLogin = () => {
       localStorage.setItem('email', data.email);
       localStorage.setItem('department', data.department);
       localStorage.setItem('designation', data.designation);
-      localStorage.setItem('contactNumber', data.contactNumber);
+      localStorage.setItem('contactNumber', data.contactNumber || '');
 
       navigate('/faculty-dashboard');
     } catch (err) {
@@ -80,7 +84,7 @@ const FacultyLogin = () => {
                 </label>
                 <input
                   type="email"
-                  placeholder="e.g. vini.dongre@tcetmumbai.in"
+                  placeholder="e.g. vini.dongre@tcetmumbai.in or prachi.janrao@tcetmumbai.in"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-sm transition-all"
@@ -92,14 +96,25 @@ const FacultyLogin = () => {
                 <label className="block text-xs font-bold text-tcet-navy uppercase tracking-wider mb-1">
                   Password
                 </label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-sm transition-all"
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-4 pr-10 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-sm transition-all"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-tcet-navy transition-colors focus:outline-none"
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                    tabIndex="-1"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               <div className="pt-2">
