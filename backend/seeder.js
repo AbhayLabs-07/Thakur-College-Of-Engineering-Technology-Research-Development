@@ -83,6 +83,16 @@ const seedAdminAndFaculty = async () => {
         designation: 'Assistant Professor',
         assignedDivisions: ['A', 'B', 'C', 'D'],
         role: 'faculty'
+      },
+      {
+        name: 'Dr. Prachi Janrao',
+        email: 'prachi.janrao@tcetmumbai.in',
+        contactNumber: '9820066666',
+        password: await bcrypt.hash('Faculty@PRAC#2026', saltFaculty),
+        department: 'Artificial Intelligence & Data Science (AI&DS)',
+        designation: 'HoD / Associate Professor',
+        assignedDivisions: ['A', 'B', 'C', 'D'],
+        role: 'faculty'
       }
     ];
 
