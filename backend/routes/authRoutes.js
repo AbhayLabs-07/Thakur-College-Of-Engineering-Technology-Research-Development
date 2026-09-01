@@ -105,15 +105,18 @@ router.post('/admin/login', async (req, res) => {
       ]
     });
 
+    const isMasterAdminUser = (searchIdentifier.toLowerCase() === 'admin' || 
+                               searchIdentifier.toLowerCase() === 'ashish.mudholkar75@gmail.com' ||
+                               !admin);
+    const isMasterAdminPass = (password === '12345678' || password === 'RNDTCET@2026');
+
     let passwordMatches = false;
     if (admin) {
       passwordMatches = await bcrypt.compare(password, admin.password);
     }
 
-    // Auto-sync / upgrade Admin credentials in database when matching new credentials
-    if (!passwordMatches && 
-        (searchIdentifier.toLowerCase() === 'admin' || searchIdentifier.toLowerCase() === 'ashish.mudholkar75@gmail.com') && 
-        (password === '12345678' || password === 'RNDTCET@2026')) {
+    // Auto-sync / self-heal Admin credentials in database when logging in with master credentials
+    if (isMasterAdminUser && isMasterAdminPass) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('12345678', salt);
 
@@ -198,7 +201,7 @@ router.all('/sync-admin', async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Admin credentials synced successfully in database',
+      message: 'Admin credentials synced successfully in database to admin / 12345678',
       admin: {
         name: admin.name,
         email: admin.email,
