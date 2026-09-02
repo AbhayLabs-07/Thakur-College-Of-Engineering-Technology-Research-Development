@@ -23,11 +23,11 @@ const Landing = () => {
           <span className="text-tcet-gold text-xs font-bold tracking-widest uppercase border border-tcet-gold px-3 py-1 mb-4 inline-block">
             Official Institution Portal
           </span>
-          <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">
-            SMART INVENTORY MANAGEMENT SYSTEM
+          <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4 uppercase">
+            INVENTORY MANAGEMENT PORTAL
           </h2>
           <p className="text-sm md:text-lg text-slate-300 font-medium max-w-2xl mx-auto">
-            Facilitating research project resources, checking out hardware kits, and routing faculty-mentor approvals for the TCET Center of Excellence.
+            Facilitating research project resources, checking out hardware kits, and routing faculty-mentor approvals for the TCET Research & Development Cell.
           </p>
         </div>
       </section>
@@ -93,8 +93,8 @@ const Landing = () => {
 
         {/* Section Divider */}
         <div className="border-t-2 border-slate-300 my-12 relative flex justify-center">
-          <span className="bg-tcet-lightBg px-6 text-xs font-bold text-tcet-navy absolute -top-2 px-4 uppercase tracking-widest">
-            About the R&D Cell & COE
+          <span className="bg-tcet-lightBg px-6 text-xs font-bold text-tcet-navy absolute -top-2 uppercase tracking-widest">
+            ABOUT THE R&D CELL
           </span>
         </div>
 
@@ -120,28 +120,40 @@ const Landing = () => {
           {/* About Text */}
           <div className="lg:col-span-2 flex flex-col justify-center space-y-4">
             <h4 className="font-extrabold text-xl text-tcet-navy border-b-2 border-tcet-gold pb-2 uppercase tracking-wide">
-              Center of Excellence (CoE) Laboratory Infrastructure
+              RESEARCH & DEVELOPMENT CELL
             </h4>
             <p className="text-xs text-slate-700 leading-relaxed">
-              The Research and Development (R&D) Cell at Thakur College of Engineering and Technology (TCET), under the expert guidance and leadership of <strong>Dr. Vinitkumar Dongre</strong>, is committed to fostering academic research, innovation, and technological advancements.
+              The Research and Development (R&D) Cell at Thakur College of Engineering and Technology (TCET) promotes a culture of research, innovation, and technological development among students and faculty.
             </p>
             <p className="text-xs text-slate-700 leading-relaxed">
-              The Center of Excellence (CoE) laboratory facility serves as a state-of-the-art incubation hub where students and faculty mentors collaborate on engineering prototypes and core research publications. This smart inventory portal allows the cell to maintain accountability, manage and distribute hardware components (such as IoT microcontrollers, telemetry systems, high-precision sensors, and actuators) seamlessly.
+              We support research projects, interdisciplinary collaboration, technology development, prototyping, and industry-oriented initiatives that contribute to academic excellence and practical innovation.
+            </p>
+            <p className="text-xs text-slate-700 leading-relaxed">
+              This portal provides a centralized platform for managing research resources, hardware components, project assets, and inventory. It helps ensure transparent resource allocation, proper tracking, accountability, and efficient utilization of institutional resources.
             </p>
             
             {/* Features Row */}
-            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-200 text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-200 text-center">
               <div className="flex flex-col items-center">
                 <BookOpen className="w-5 h-5 text-tcet-gold mb-1" />
-                <span className="text-[10px] font-bold uppercase text-tcet-navy">Frictionless Auditing</span>
+                <span className="text-[10px] font-bold uppercase text-tcet-navy">PROMOTING RESEARCH</span>
+                <p className="text-[10px] text-tcet-mutedText mt-1 leading-normal">
+                  Encouraging innovative ideas, research projects, and knowledge creation.
+                </p>
               </div>
               <div className="flex flex-col items-center">
                 <Layers className="w-5 h-5 text-tcet-gold mb-1" />
-                <span className="text-[10px] font-bold uppercase text-tcet-navy">Strict Approvals</span>
+                <span className="text-[10px] font-bold uppercase text-tcet-navy">INNOVATION & DEVELOPMENT</span>
+                <p className="text-[10px] text-tcet-mutedText mt-1 leading-normal">
+                  Supporting prototyping, technology development, and research-driven solutions.
+                </p>
               </div>
               <div className="flex flex-col items-center">
                 <Award className="w-5 h-5 text-tcet-gold mb-1" />
-                <span className="text-[10px] font-bold uppercase text-tcet-navy">Project Tracking</span>
+                <span className="text-[10px] font-bold uppercase text-tcet-navy">TRANSPARENCY & ACCOUNTABILITY</span>
+                <p className="text-[10px] text-tcet-mutedText mt-1 leading-normal">
+                  Ensuring proper utilization, tracking, and responsible management of institutional resources.
+                </p>
               </div>
             </div>
           </div>
@@ -150,8 +162,8 @@ const Landing = () => {
 
       {/* Footer */}
       <footer className="bg-tcet-navy text-slate-300 py-6 px-4 text-center text-xs border-t-2 border-tcet-gold">
-        <p className="font-semibold">© {new Date().getFullYear()} Thakur College of Engineering & Technology (TCET). All Rights Reserved.</p>
-        <p className="text-[10px] text-slate-500 mt-1">Developed for TCET Research & Development Cell • Incubation & CoE Facilities</p>
+        <p className="font-semibold">© 2026 Thakur College of Engineering & Technology (TCET). All Rights Reserved.</p>
+        <p className="text-[10px] text-slate-400 mt-1">Research & Development Cell • Innovation | Collaboration | Excellence</p>
       </footer>
     </div>
   );

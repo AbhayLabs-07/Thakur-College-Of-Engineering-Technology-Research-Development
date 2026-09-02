@@ -48,7 +48,7 @@ const Header = () => {
           />
           <div>
             <h1 className="text-xl font-bold tracking-tight text-white">THAKUR COLLEGE OF ENGINEERING & TECHNOLOGY</h1>
-            <p className="text-xs text-tcet-gold font-semibold tracking-wider">RESEARCH & DEVELOPMENT CELL • SMART INVENTORY</p>
+            <p className="text-xs text-tcet-gold font-semibold tracking-wider">RESEARCH & DEVELOPMENT CELL • INVENTORY MANAGEMENT PORTAL</p>
           </div>
         </div>
 
