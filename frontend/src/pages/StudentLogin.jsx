@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api';
 import { ShieldAlert, LogIn, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import Header from '../components/Header';
+import { authStorage } from '../utils/storage';
 
 const StudentLogin = () => {
   const navigate = useNavigate();
@@ -24,22 +25,22 @@ const StudentLogin = () => {
     }
 
     try {
-      // Clear prior sessions
-      localStorage.clear();
+      // Clear prior sessions in this tab
+      authStorage.clear();
 
       const data = await authService.loginStudent(loginId.trim(), password.trim());
       
-      // Save details to localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', 'student');
-      localStorage.setItem('name', data.name);
-      localStorage.setItem('erpId', data.erpId);
-      localStorage.setItem('userId', data.userId);
-      localStorage.setItem('branch', data.branch);
-      localStorage.setItem('division', data.division);
-      localStorage.setItem('email', data.email);
-      localStorage.setItem('contactNumber', data.contactNumber || '');
-      localStorage.setItem('rollNo', data.rollNo || '');
+      // Save details to tab-isolated storage
+      authStorage.setItem('token', data.token);
+      authStorage.setItem('role', 'student');
+      authStorage.setItem('name', data.name);
+      authStorage.setItem('erpId', data.erpId);
+      authStorage.setItem('userId', data.userId);
+      authStorage.setItem('branch', data.branch);
+      authStorage.setItem('division', data.division);
+      authStorage.setItem('email', data.email);
+      authStorage.setItem('contactNumber', data.contactNumber || '');
+      authStorage.setItem('rollNo', data.rollNo || '');
 
       navigate('/student-dashboard');
     } catch (err) {

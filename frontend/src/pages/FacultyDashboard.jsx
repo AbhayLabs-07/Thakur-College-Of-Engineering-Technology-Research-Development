@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { HelpCircle, CheckCircle2, Award, ClipboardCheck, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 import Header from '../components/Header';
 import { facultyService } from '../services/api';
+import { authStorage } from '../utils/storage';
 
 const FacultyDashboard = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -67,23 +68,23 @@ const FacultyDashboard = () => {
         <div className="max-w-7xl mx-auto flex flex-wrap gap-y-2 gap-x-6 text-[11px] text-slate-700 items-center">
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">Faculty:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{localStorage.getItem('name')}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{authStorage.getItem('name')}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">Rank:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{localStorage.getItem('designation')}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{authStorage.getItem('designation')}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">Department:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{localStorage.getItem('department')}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{authStorage.getItem('department')}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">Faculty Gmail ID:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('email') || '-'}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{authStorage.getItem('email') || '-'}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">Faculty Number:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('contactNumber') || 'N/A'}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{authStorage.getItem('contactNumber') || 'N/A'}</span>
           </div>
         </div>
       </div>
@@ -251,7 +252,7 @@ const FacultyDashboard = () => {
                     </span>
                     <input
                       type="text"
-                      placeholder="Add reviewer notes/remarks (e.g. Approved for COE Incubation)..."
+                      placeholder="Add reviewer notes/remarks (e.g. Approved for R&D Project)..."
                       value={remarks[record._id] || ''}
                       onChange={(e) => handleRemarkChange(record._id, e.target.value)}
                       className="w-full pl-9 pr-4 py-3 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs"

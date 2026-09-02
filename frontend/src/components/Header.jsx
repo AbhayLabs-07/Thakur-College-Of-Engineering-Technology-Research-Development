@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Clock, LogOut, User } from 'lucide-react';
+import { authStorage } from '../utils/storage';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -24,12 +25,12 @@ const Header = () => {
     });
   };
 
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('role');
-  const userName = localStorage.getItem('name') || localStorage.getItem('username') || 'User';
+  const token = authStorage.getItem('token');
+  const role = authStorage.getItem('role');
+  const userName = authStorage.getItem('name') || authStorage.getItem('username') || 'User';
 
   const handleLogout = () => {
-    localStorage.clear();
+    authStorage.clear();
     navigate('/');
   };
 

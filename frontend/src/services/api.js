@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { authStorage } from '../utils/storage';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -11,7 +12,7 @@ const API = axios.create({
 
 // Interceptor to add JWT authorization token
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = authStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

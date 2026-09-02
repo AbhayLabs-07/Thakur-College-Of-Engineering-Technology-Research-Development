@@ -2,13 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, ShieldAlert, Users, Award, BookOpen, Layers } from 'lucide-react';
 import Header from '../components/Header';
+import { authStorage } from '../utils/storage';
 
 const Landing = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (localStorage.getItem('role') === 'student') {
-      localStorage.clear();
+    if (authStorage.getItem('role') === 'student') {
+      authStorage.clear();
     }
   }, []);
 

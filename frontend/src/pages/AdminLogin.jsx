@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api';
 import { ShieldAlert, LogIn, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import Header from '../components/Header';
+import { authStorage } from '../utils/storage';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -24,18 +25,18 @@ const AdminLogin = () => {
     }
 
     try {
-      // Clear any prior role sessions (e.g. Faculty/Student)
-      localStorage.clear();
+      // Clear any prior role sessions in this tab
+      authStorage.clear();
 
       const data = await authService.loginAdmin(username.trim(), password.trim());
       
-      // Save details to localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', 'admin');
-      localStorage.setItem('name', data.name || 'Ashish Mudholkar');
-      localStorage.setItem('username', data.username || 'Admin');
-      localStorage.setItem('email', data.email || 'ashish.mudholkar75@gmail.com');
-      localStorage.setItem('contactNumber', data.contactNumber || '');
+      // Save details to tab-isolated storage
+      authStorage.setItem('token', data.token);
+      authStorage.setItem('role', 'admin');
+      authStorage.setItem('name', data.name || 'Ashish Mudholkar');
+      authStorage.setItem('username', data.username || 'Admin');
+      authStorage.setItem('email', data.email || 'ashish.mudholkar75@gmail.com');
+      authStorage.setItem('contactNumber', data.contactNumber || '');
 
       navigate('/admin-panel');
     } catch (err) {

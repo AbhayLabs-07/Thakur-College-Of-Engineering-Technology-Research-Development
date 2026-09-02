@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import Header from '../components/Header';
 import { adminService, componentService, authService } from '../services/api';
+import { authStorage } from '../utils/storage';
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('tracking'); // 'tracking', 'inventory', 'faculty', 'utilities'
@@ -48,10 +49,12 @@ const AdminPanel = () => {
     authService.getProfile().then(data => {
       if (data && (data.user || data.name)) {
         const u = data.user || data;
-        if (u.name) localStorage.setItem('name', u.name);
-        if (u.username) localStorage.setItem('username', u.username);
-        if (u.email) localStorage.setItem('email', u.email);
-        if (u.contactNumber) localStorage.setItem('contactNumber', u.contactNumber);
+        if (data.role === 'admin' || !data.role) {
+          if (u.name) authStorage.setItem('name', u.name);
+          if (u.username) authStorage.setItem('username', u.username);
+          if (u.email) authStorage.setItem('email', u.email);
+          if (u.contactNumber) authStorage.setItem('contactNumber', u.contactNumber);
+        }
       }
     }).catch(() => {});
   }, []);
@@ -238,19 +241,19 @@ const AdminPanel = () => {
         <div className="max-w-7xl mx-auto flex flex-wrap gap-y-2 gap-x-6 text-[11px] text-slate-700 items-center">
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">Admin:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold text-slate-900">{localStorage.getItem('name') || 'Ashish Mudholkar'}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold text-slate-900">{authStorage.getItem('name') || 'Ashish Mudholkar'}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">Email:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono text-tcet-navy font-semibold">{localStorage.getItem('email') || 'ashish.mudholkar75@gmail.com'}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono text-tcet-navy font-semibold">{authStorage.getItem('email') || 'ashish.mudholkar75@gmail.com'}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">User ID / Username:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono font-bold text-slate-900">{localStorage.getItem('username') || 'Admin'}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono font-bold text-slate-900">{authStorage.getItem('username') || 'Admin'}</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="font-bold text-tcet-navy">Contact Number:</span>
-            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('contactNumber') || '+91 9920123456'}</span>
+            <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{authStorage.getItem('contactNumber') || '+91 9920123456'}</span>
           </div>
         </div>
       </div>
@@ -495,7 +498,7 @@ const AdminPanel = () => {
           {/* Left Columns (2/3): Catalog list */}
           <div className="lg:col-span-2 bg-white border-2 border-slate-300 p-6 shadow-sm">
             <h3 className="font-extrabold text-sm uppercase text-tcet-navy border-b border-slate-200 pb-3 mb-6 tracking-wider">
-              CoE Catalogued Items
+              R&D Cell Catalogued Items
             </h3>
             
             <div className="overflow-x-auto">

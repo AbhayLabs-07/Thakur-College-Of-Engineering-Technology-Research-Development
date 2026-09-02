@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api';
 import { ShieldAlert, LogIn, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import Header from '../components/Header';
+import { authStorage } from '../utils/storage';
 
 const FacultyLogin = () => {
   const navigate = useNavigate();
@@ -24,19 +25,19 @@ const FacultyLogin = () => {
     }
 
     try {
-      // Clear prior sessions
-      localStorage.clear();
+      // Clear prior sessions in this tab
+      authStorage.clear();
 
       const data = await authService.loginFaculty(email.trim(), password.trim());
       
-      // Save details to localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', 'faculty');
-      localStorage.setItem('name', data.name);
-      localStorage.setItem('email', data.email);
-      localStorage.setItem('department', data.department);
-      localStorage.setItem('designation', data.designation);
-      localStorage.setItem('contactNumber', data.contactNumber || '');
+      // Save details to tab-isolated storage
+      authStorage.setItem('token', data.token);
+      authStorage.setItem('role', 'faculty');
+      authStorage.setItem('name', data.name);
+      authStorage.setItem('email', data.email);
+      authStorage.setItem('department', data.department);
+      authStorage.setItem('designation', data.designation);
+      authStorage.setItem('contactNumber', data.contactNumber || '');
 
       navigate('/faculty-dashboard');
     } catch (err) {

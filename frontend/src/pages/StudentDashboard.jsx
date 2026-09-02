@@ -9,6 +9,7 @@ import ComponentCard from '../components/ComponentCard';
 import CartDrawer from '../components/CartDrawer';
 import TokenModal from '../components/TokenModal';
 import { componentService, studentService } from '../services/api';
+import { authStorage } from '../utils/storage';
 
 const StudentDashboard = () => {
   // Page Tabs
@@ -161,7 +162,7 @@ const StudentDashboard = () => {
     setWizardStep(2);
     // Fetch smart recommendations immediately based on the details
     handleGetRecommendations();
-    showNotify('Project profile saved. Loading CoE hardware catalogue...');
+    showNotify('Project profile saved. Loading R&D Cell hardware catalogue...');
   };
 
   // Filter Trigger
@@ -301,10 +302,10 @@ const StudentDashboard = () => {
           {/* Greeting */}
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-tcet-gold flex items-center justify-center text-tcet-navy font-bold text-sm">
-              {localStorage.getItem('name')?.charAt(0) || 'S'}
+              {authStorage.getItem('name')?.charAt(0) || 'S'}
             </div>
             <span className="font-extrabold text-sm text-tcet-navy">
-              Hello, {localStorage.getItem('name')}!
+              Hello, {authStorage.getItem('name')}!
             </span>
           </div>
 
@@ -312,7 +313,7 @@ const StudentDashboard = () => {
           <div className="flex flex-wrap gap-y-2 gap-x-6 text-[11px] text-slate-700 items-center">
             <div className="flex items-center gap-1">
               <span className="font-bold text-tcet-navy">Name:</span>
-              <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{localStorage.getItem('name')}</span>
+              <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold">{authStorage.getItem('name')}</span>
             </div>
             <div className="flex items-center gap-1">
               <span className="font-bold text-tcet-navy">Department:</span>
@@ -320,23 +321,23 @@ const StudentDashboard = () => {
             </div>
             <div className="flex items-center gap-1">
               <span className="font-bold text-tcet-navy">Division:</span>
-              <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold font-mono">{localStorage.getItem('division')}</span>
+              <span className="bg-white border border-slate-300 px-2 py-0.5 font-semibold font-mono">{authStorage.getItem('division')}</span>
             </div>
             <div className="flex items-center gap-1">
               <span className="font-bold text-tcet-navy">Roll No:</span>
-              <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono font-bold text-tcet-gold">{localStorage.getItem('rollNo') || 'N/A'}</span>
+              <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono font-bold text-tcet-gold">{authStorage.getItem('rollNo') || 'N/A'}</span>
             </div>
             <div className="flex items-center gap-1">
               <span className="font-bold text-tcet-navy">ERP ID:</span>
-              <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('erpId')}</span>
+              <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{authStorage.getItem('erpId')}</span>
             </div>
             <div className="flex items-center gap-1">
               <span className="font-bold text-tcet-navy">Gmail ID:</span>
-              <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('email')}</span>
+              <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{authStorage.getItem('email')}</span>
             </div>
             <div className="flex items-center gap-1">
               <span className="font-bold text-tcet-navy">Contact:</span>
-              <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{localStorage.getItem('contactNumber')}</span>
+              <span className="bg-white border border-slate-300 px-2 py-0.5 font-mono">{authStorage.getItem('contactNumber')}</span>
             </div>
           </div>
         </div>
