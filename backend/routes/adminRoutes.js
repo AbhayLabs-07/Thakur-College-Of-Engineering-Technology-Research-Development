@@ -13,15 +13,26 @@ const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// @desc    Get all faculty members and total count (Admin only)
+// @desc    Get all faculty members in seniority hierarchy order (Admin only)
 // @route   GET /api/admin/faculty
 // @access  Private/Admin
 router.get('/faculty', protect, adminOnly, async (req, res) => {
   try {
-    const faculties = await Faculty.find({}).sort({ name: 1 });
-    const count = await Faculty.countDocuments();
+    const { department, tier } = req.query;
+    const query = {};
+    if (department && department !== 'all') {
+      query.department = department;
+    }
+    if (tier && tier !== 'all') {
+      query.hierarchyTier = Number(tier);
+    }
+
+    const faculties = await Faculty.find(query).sort({ seniorityOrder: 1, hierarchyTier: 1, dojDate: 1 });
+    const count = await Faculty.countDocuments(query);
+    const totalCount = await Faculty.countDocuments();
     res.json({
       count,
+      totalCount,
       faculties
     });
   } catch (error) {

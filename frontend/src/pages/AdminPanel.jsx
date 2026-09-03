@@ -21,6 +21,8 @@ const AdminPanel = () => {
   const [facultyCount, setFacultyCount] = useState(0);
   const [facultyLoading, setFacultyLoading] = useState(false);
   const [facultySearch, setFacultySearch] = useState('');
+  const [facultyDeptFilter, setFacultyDeptFilter] = useState('all');
+  const [facultyTierFilter, setFacultyTierFilter] = useState('all');
 
   // Inventory form state
   const [isEditing, setIsEditing] = useState(false);
@@ -91,7 +93,7 @@ const AdminPanel = () => {
     try {
       const data = await adminService.getFacultyRoster();
       setFaculties(data.faculties || []);
-      setFacultyCount(data.count !== undefined ? data.count : (data.faculties?.length || 0));
+      setFacultyCount(data.totalCount !== undefined ? data.totalCount : (data.count !== undefined ? data.count : (data.faculties?.length || 0)));
     } catch (err) {
       console.error(err);
       showNotify('Failed to fetch faculty roster directory.', 'error');
@@ -726,18 +728,57 @@ const AdminPanel = () => {
               </div>
             </div>
 
-            {/* Faculty Search Filter */}
-            <div className="relative mb-6">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="w-4 h-4 text-slate-400" />
-              </span>
-              <input
-                type="text"
-                placeholder="Search faculty by name, department, designation, specialization or email..."
-                value={facultySearch}
-                onChange={(e) => setFacultySearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs"
-              />
+            {/* Faculty Search & Dropdown Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-6">
+              {/* Search text */}
+              <div className="relative md:col-span-6">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="w-4 h-4 text-slate-400" />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search by name, designation, DOJ (e.g. 2006), specialization or email..."
+                  value={facultySearch}
+                  onChange={(e) => setFacultySearch(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs h-10"
+                />
+              </div>
+
+              {/* Department filter */}
+              <div className="md:col-span-3">
+                <select
+                  value={facultyDeptFilter}
+                  onChange={(e) => setFacultyDeptFilter(e.target.value)}
+                  className="w-full px-3 py-2 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs bg-white h-10 font-medium"
+                >
+                  <option value="all">All Departments (18)</option>
+                  {Array.from(new Set(faculties.map(f => f.department).filter(Boolean))).sort().map(dept => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Hierarchy Tier filter */}
+              <div className="md:col-span-3">
+                <select
+                  value={facultyTierFilter}
+                  onChange={(e) => setFacultyTierFilter(e.target.value)}
+                  className="w-full px-3 py-2 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs bg-white h-10 font-medium"
+                >
+                  <option value="all">All Hierarchy Tiers</option>
+                  <option value="1">Tier 1: Principal</option>
+                  <option value="2">Tier 2: Vice Principal</option>
+                  <option value="3">Tier 3: Dean</option>
+                  <option value="4">Tier 4: Associate Dean</option>
+                  <option value="5">Tier 5: Head of Department (HOD)</option>
+                  <option value="6">Tier 6: Deputy HOD / Lead</option>
+                  <option value="7">Tier 7: Professor</option>
+                  <option value="8">Tier 8: Associate Professor</option>
+                  <option value="9">Tier 9: Assistant Professor</option>
+                  <option value="10">Tier 10: Lecturer / Trainer</option>
+                  <option value="11">Tier 11: Academic Staff</option>
+                </select>
+              </div>
             </div>
 
             {/* Table or Loading / Empty states */}
@@ -757,10 +798,12 @@ const AdminPanel = () => {
                 <table className="w-full text-left border-collapse text-xs border border-slate-200">
                   <thead>
                     <tr className="bg-tcet-navy text-white uppercase text-[10px] tracking-wider">
-                      <th className="p-3 border border-slate-200 font-black">#</th>
+                      <th className="p-3 border border-slate-200 font-black text-center w-16">Seniority</th>
                       <th className="p-3 border border-slate-200 font-black">Faculty Name</th>
-                      <th className="p-3 border border-slate-200 font-black">Rank / Designation</th>
+                      <th className="p-3 border border-slate-200 font-black">Hierarchy Tier</th>
+                      <th className="p-3 border border-slate-200 font-black">Designation & Roles</th>
                       <th className="p-3 border border-slate-200 font-black">Department</th>
+                      <th className="p-3 border border-slate-200 font-black text-center">DOJ</th>
                       <th className="p-3 border border-slate-200 font-black">Specialization</th>
                       <th className="p-3 border border-slate-200 font-black">Email Address</th>
                       <th className="p-3 border border-slate-200 font-black">Contact No</th>
@@ -770,37 +813,85 @@ const AdminPanel = () => {
                     {faculties
                       .filter(fac => {
                         const term = facultySearch.toLowerCase();
-                        return (
+                        const matchesSearch = !term || (
                           (fac.name && fac.name.toLowerCase().includes(term)) ||
                           (fac.department && fac.department.toLowerCase().includes(term)) ||
                           (fac.designation && fac.designation.toLowerCase().includes(term)) ||
+                          (fac.hierarchyLabel && fac.hierarchyLabel.toLowerCase().includes(term)) ||
                           (fac.specialization && fac.specialization.toLowerCase().includes(term)) ||
-                          (fac.email && fac.email.toLowerCase().includes(term))
+                          (fac.email && fac.email.toLowerCase().includes(term)) ||
+                          (fac.doj && fac.doj.toLowerCase().includes(term))
                         );
+                        const matchesDept = facultyDeptFilter === 'all' || fac.department === facultyDeptFilter;
+                        const matchesTier = facultyTierFilter === 'all' || String(fac.hierarchyTier) === String(facultyTierFilter);
+                        return matchesSearch && matchesDept && matchesTier;
                       })
-                      .map((fac, idx) => (
-                        <tr key={fac._id || idx} className="hover:bg-slate-50 transition-colors">
-                          <td className="p-3 font-mono text-slate-400 border border-slate-200">{idx + 1}</td>
-                          <td className="p-3 font-extrabold text-slate-800 border border-slate-200">{fac.name}</td>
-                          <td className="p-3 text-slate-700 font-semibold border border-slate-200">{fac.designation || 'Faculty'}</td>
-                          <td className="p-3 text-slate-700 border border-slate-200 font-medium">{fac.department}</td>
-                          <td className="p-3 text-slate-600 border border-slate-200">
-                            {fac.specialization ? (
-                              <span className="font-semibold text-tcet-navy bg-slate-100 px-2 py-0.5 border border-slate-200 rounded-sm">
-                                {fac.specialization}
+                      .map((fac, idx) => {
+                        const getBadgeStyle = (tier) => {
+                          switch (tier) {
+                            case 1: return 'bg-amber-100 text-amber-950 border-amber-400 font-black shadow-sm';
+                            case 2: return 'bg-amber-50 text-amber-900 border-amber-300 font-bold';
+                            case 3: return 'bg-purple-100 text-purple-900 border-purple-300 font-bold';
+                            case 4: return 'bg-purple-50 text-purple-800 border-purple-200 font-semibold';
+                            case 5: return 'bg-blue-100 text-blue-900 border-blue-300 font-bold';
+                            case 6: return 'bg-blue-50 text-blue-800 border-blue-200 font-semibold';
+                            case 7: return 'bg-emerald-100 text-emerald-900 border-emerald-300 font-semibold';
+                            case 8: return 'bg-emerald-50 text-emerald-800 border-emerald-200 font-medium';
+                            case 9: return 'bg-slate-100 text-slate-800 border-slate-300 font-medium';
+                            case 10: return 'bg-orange-50 text-orange-800 border-orange-200 font-medium';
+                            default: return 'bg-slate-50 text-slate-600 border-slate-200';
+                          }
+                        };
+
+                        return (
+                          <tr key={fac._id || idx} className="hover:bg-slate-50 transition-colors">
+                            <td className="p-3 font-mono font-bold text-center text-tcet-navy border border-slate-200">
+                              #{fac.seniorityOrder || idx + 1}
+                            </td>
+                            <td className="p-3 font-extrabold text-slate-800 border border-slate-200">
+                              <div className="flex items-center gap-2">
+                                <span>{fac.name}</span>
+                                {fac.email && (
+                                  <span className="inline-block w-2 h-2 rounded-full bg-green-500" title="Active Login Account"></span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-3 border border-slate-200 whitespace-nowrap">
+                              <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wide border rounded-sm ${getBadgeStyle(fac.hierarchyTier)}`}>
+                                {fac.hierarchyLabel || `Tier ${fac.hierarchyTier || 9}`}
                               </span>
-                            ) : (
-                              <span className="text-slate-300 italic">- Not Specified -</span>
-                            )}
-                          </td>
-                          <td className="p-3 text-slate-700 border border-slate-200 font-mono">
-                            {fac.email || <span className="text-slate-300 italic">-</span>}
-                          </td>
-                          <td className="p-3 text-slate-700 border border-slate-200 font-mono">
-                            {fac.contactNumber || <span className="text-slate-300 italic">-</span>}
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td className="p-3 text-slate-700 font-semibold border border-slate-200">
+                              {fac.designation || 'Faculty'}
+                            </td>
+                            <td className="p-3 text-slate-700 border border-slate-200 font-medium">
+                              {fac.department}
+                            </td>
+                            <td className="p-3 text-center text-slate-700 border border-slate-200 font-mono text-[11px] whitespace-nowrap">
+                              {fac.doj ? (
+                                <span className="bg-slate-100 px-1.5 py-0.5 border border-slate-200 rounded-sm font-semibold">{fac.doj}</span>
+                              ) : (
+                                <span className="text-slate-300 italic">-</span>
+                              )}
+                            </td>
+                            <td className="p-3 text-slate-600 border border-slate-200">
+                              {fac.specialization ? (
+                                <span className="font-semibold text-tcet-navy bg-slate-100 px-2 py-0.5 border border-slate-200 rounded-sm text-[11px]">
+                                  {fac.specialization}
+                                </span>
+                              ) : (
+                                <span className="text-slate-300 italic">-</span>
+                              )}
+                            </td>
+                            <td className="p-3 text-slate-700 border border-slate-200 font-mono text-[11px]">
+                              {fac.email || <span className="text-slate-300 italic">-</span>}
+                            </td>
+                            <td className="p-3 text-slate-700 border border-slate-200 font-mono text-[11px]">
+                              {fac.contactNumber || <span className="text-slate-300 italic">-</span>}
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </table>
               </div>
