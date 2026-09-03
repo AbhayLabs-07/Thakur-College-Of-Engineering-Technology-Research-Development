@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import dns from 'node:dns';
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 import mongoose from 'mongoose';
 import xlsx from 'xlsx';
 import connectDB from './config/db.js';
