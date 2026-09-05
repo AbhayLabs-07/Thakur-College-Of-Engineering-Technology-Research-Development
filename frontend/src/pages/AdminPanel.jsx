@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ShieldAlert, Settings, FileSpreadsheet, Plus, Trash2, Edit2, 
-  Search, RefreshCw, Calendar, Package, ArrowRightLeft, CheckCircle2, Users, GraduationCap, Award
+  Search, RefreshCw, Calendar, Package, ArrowRightLeft, CheckCircle2, Users, GraduationCap, Award, UserPlus
 } from 'lucide-react';
 import Header from '../components/Header';
 import { adminService, componentService, authService } from '../services/api';
@@ -23,6 +23,50 @@ const AdminPanel = () => {
   const [facultySearch, setFacultySearch] = useState('');
   const [facultyDeptFilter, setFacultyDeptFilter] = useState('all');
   const [facultyTierFilter, setFacultyTierFilter] = useState('all');
+
+  // Add Faculty Form states
+  const [showAddFaculty, setShowAddFaculty] = useState(true);
+  const [facultySubmitting, setFacultySubmitting] = useState(false);
+  const [newFaculty, setNewFaculty] = useState({
+    name: '',
+    position: 'Assistant Professor',
+    doj: '',
+    department: 'Computer Engineering',
+    email: '',
+    contactNumber: ''
+  });
+
+  const tcetPositions = [
+    'Principal',
+    'Vice Principal',
+    'Dean',
+    'Associate Dean',
+    'Head of Department (HOD)',
+    'Deputy HOD / Lead',
+    'Professor',
+    'Associate Professor',
+    'Assistant Professor',
+    'Lecturer',
+    'Academic Staff'
+  ];
+
+  const tcetDepartments = [
+    'Artificial Intelligence and Data Science',
+    'Artificial Intelligence and Machine Learning',
+    'Civil Engineering',
+    'Computer Engineering',
+    'Computer Science and Engineering (Cyber Security)',
+    'Computer Science and Engineering (Data Science)',
+    'Computer Science and Engineering (IoT)',
+    'Electronics & Telecommunication Engineering',
+    'Electronics and Computer Science',
+    'Humanities & Sciences',
+    'Information Technology',
+    'Mechanical Engineering',
+    'Mechanical & Mechatronics Engineering (Additive Manufacturing)',
+    'Research and Development',
+    'Training and Placement Cell'
+  ];
 
   // Sort comparator strictly by Position (Hierarchy Tier) -> Date of Joining (DOJ) -> Deterministic tie-breaker
   // NOT alphabetical order
@@ -148,6 +192,62 @@ const AdminPanel = () => {
       showNotify('Failed to fetch faculty roster directory.', 'error');
     } finally {
       setFacultyLoading(false);
+    }
+  };
+
+  const handleAddFacultySubmit = async (e) => {
+    e.preventDefault();
+    if (!newFaculty.name.trim()) {
+      showNotify('Please enter the faculty full name', 'error');
+      return;
+    }
+    if (!newFaculty.position) {
+      showNotify('Please select or enter the faculty position', 'error');
+      return;
+    }
+    if (!newFaculty.department) {
+      showNotify('Please select the faculty department', 'error');
+      return;
+    }
+    if (!newFaculty.doj) {
+      showNotify('Please provide the date of joining', 'error');
+      return;
+    }
+
+    setFacultySubmitting(true);
+    try {
+      const res = await adminService.createFaculty(newFaculty);
+      showNotify(res.message || `Faculty ${newFaculty.name} added successfully to roster!`);
+      // Reset form
+      setNewFaculty({
+        name: '',
+        position: 'Assistant Professor',
+        doj: '',
+        department: 'Computer Engineering',
+        email: '',
+        contactNumber: ''
+      });
+      // Refresh directory list and count
+      await fetchFaculty();
+    } catch (err) {
+      console.error(err);
+      showNotify(err.response?.data?.message || 'Failed to add faculty member.', 'error');
+    } finally {
+      setFacultySubmitting(false);
+    }
+  };
+
+  const handleDeleteFaculty = async (id, name) => {
+    if (!window.confirm(`Are you sure you want to remove "${name}" from the faculty roster? This will recalculate seniority.`)) {
+      return;
+    }
+    try {
+      const res = await adminService.deleteFaculty(id);
+      showNotify(res.message || `Faculty removed successfully.`);
+      await fetchFaculty();
+    } catch (err) {
+      console.error(err);
+      showNotify(err.response?.data?.message || 'Failed to delete faculty member.', 'error');
     }
   };
 
@@ -763,6 +863,14 @@ const AdminPanel = () => {
               </div>
 
               <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowAddFaculty(!showAddFaculty)}
+                  className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold bg-tcet-navy text-white hover:bg-slate-800 transition-all border border-tcet-navy shadow-sm"
+                >
+                  <UserPlus className="w-4 h-4 text-tcet-gold" />
+                  <span>{showAddFaculty ? 'Hide Add Faculty Form' : '+ Add Faculty Member'}</span>
+                </button>
                 <div className="bg-tcet-navy text-white px-4 py-2 text-xs font-mono font-bold border border-tcet-gold flex items-center gap-2 shadow-sm">
                   <span>Total Enrolled Faculties:</span>
                   <span className="text-tcet-gold text-sm font-black">{facultyCount}</span>
@@ -777,6 +885,158 @@ const AdminPanel = () => {
               </div>
             </div>
 
+            {/* Add Faculty Section */}
+            {showAddFaculty && (
+              <div className="mb-6 bg-slate-50 border-2 border-slate-300 p-5 shadow-xs">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+                  <div className="flex items-center gap-2">
+                    <UserPlus className="w-5 h-5 text-tcet-navy" />
+                    <div>
+                      <h4 className="font-extrabold text-sm uppercase text-tcet-navy tracking-wider">
+                        Add New Faculty Member
+                      </h4>
+                      <p className="text-[11px] text-slate-500">
+                        Enroll a new academic faculty into TCET roster. Seniority hierarchy order will be automatically calculated.
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono uppercase bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 font-bold">
+                    Admin Portal Feature
+                  </span>
+                </div>
+
+                <form onSubmit={handleAddFacultySubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Question 1: What is the name of the faculty? */}
+                    <div>
+                      <label className="block text-xs font-black text-tcet-navy mb-1.5 uppercase tracking-wide">
+                        1. What is the name of the faculty? <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Dr. Rajesh Kumar"
+                        value={newFaculty.name}
+                        onChange={(e) => setNewFaculty({ ...newFaculty, name: e.target.value })}
+                        className="w-full px-3 py-2 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs bg-white font-medium"
+                      />
+                    </div>
+
+                    {/* Question 2: What is the position of the faculty? */}
+                    <div>
+                      <label className="block text-xs font-black text-tcet-navy mb-1.5 uppercase tracking-wide">
+                        2. What is the position of the faculty? <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        required
+                        value={newFaculty.position}
+                        onChange={(e) => setNewFaculty({ ...newFaculty, position: e.target.value })}
+                        className="w-full px-3 py-2 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs bg-white font-medium"
+                      >
+                        {tcetPositions.map((pos) => (
+                          <option key={pos} value={pos}>{pos}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Question 3: What is the date of joining? */}
+                    <div>
+                      <label className="block text-xs font-black text-tcet-navy mb-1.5 uppercase tracking-wide">
+                        3. What is the date of joining? <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        required
+                        value={newFaculty.doj}
+                        onChange={(e) => setNewFaculty({ ...newFaculty, doj: e.target.value })}
+                        className="w-full px-3 py-2 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs bg-white font-medium"
+                      />
+                    </div>
+
+                    {/* Question 4: Which department does the faculty belong to? */}
+                    <div>
+                      <label className="block text-xs font-black text-tcet-navy mb-1.5 uppercase tracking-wide">
+                        4. Which department does the faculty belong to? <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        required
+                        value={newFaculty.department}
+                        onChange={(e) => setNewFaculty({ ...newFaculty, department: e.target.value })}
+                        className="w-full px-3 py-2 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs bg-white font-medium"
+                      >
+                        {tcetDepartments.map((dept) => (
+                          <option key={dept} value={dept}>{dept}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Optional Details: Email & Contact */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                        Official Email Address <span className="text-slate-400 font-normal">(Optional for login)</span>
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="e.g. rajesh.kumar@tcetmumbai.in"
+                        value={newFaculty.email}
+                        onChange={(e) => setNewFaculty({ ...newFaculty, email: e.target.value })}
+                        className="w-full px-3 py-2 border border-slate-300 focus:border-tcet-navy focus:outline-none text-xs bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                        Contact Number <span className="text-slate-400 font-normal">(Optional)</span>
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="e.g. 9820012345"
+                        value={newFaculty.contactNumber}
+                        onChange={(e) => setNewFaculty({ ...newFaculty, contactNumber: e.target.value })}
+                        className="w-full px-3 py-2 border border-slate-300 focus:border-tcet-navy focus:outline-none text-xs bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+                    <button
+                      type="button"
+                      onClick={() => setNewFaculty({
+                        name: '',
+                        position: 'Assistant Professor',
+                        doj: '',
+                        department: 'Computer Engineering',
+                        email: '',
+                        contactNumber: ''
+                      })}
+                      className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 bg-white border border-slate-300 transition-all uppercase"
+                    >
+                      Reset Form
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={facultySubmitting}
+                      className="px-6 py-2 text-xs font-bold bg-tcet-navy hover:bg-slate-800 text-white border border-tcet-navy transition-all uppercase flex items-center gap-2 shadow-sm disabled:opacity-50"
+                    >
+                      {facultySubmitting ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>Saving Faculty...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-3.5 h-3.5 text-tcet-gold" />
+                          <span>Save & Add Faculty</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
             {/* Faculty Search & Dropdown Filters */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-6">
               {/* Search text */}
@@ -786,7 +1046,7 @@ const AdminPanel = () => {
                 </span>
                 <input
                   type="text"
-                  placeholder="Search by name, designation, DOJ (e.g. 2006), specialization or email..."
+                  placeholder="Search by name, position, department or email..."
                   value={facultySearch}
                   onChange={(e) => setFacultySearch(e.target.value)}
                   className="w-full pl-9 pr-4 py-2 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs h-10"
@@ -853,7 +1113,7 @@ const AdminPanel = () => {
                     </span>
                   </div>
                   <span className="text-[11px] text-amber-800 font-mono font-bold whitespace-nowrap bg-amber-100 px-2.5 py-0.5 border border-amber-300 rounded-sm">
-                    Tier 1 &rarr; Tier 11 | Earliest DOJ First
+                    Earliest DOJ First
                   </span>
                 </div>
 
@@ -865,17 +1125,11 @@ const AdminPanel = () => {
                           {facultyDeptFilter !== 'all' ? 'Dept Rank' : 'Seniority'}
                         </th>
                         <th className="p-3 border border-slate-200 font-black">Faculty Name</th>
-                        <th className="p-3 border border-slate-200 font-black">
-                          <span className="text-tcet-gold font-bold">1st: Position (Tier)</span>
-                        </th>
-                        <th className="p-3 border border-slate-200 font-black">Designation & Roles</th>
+                        <th className="p-3 border border-slate-200 font-black">Position / Designation</th>
                         <th className="p-3 border border-slate-200 font-black">Department</th>
-                        <th className="p-3 border border-slate-200 font-black text-center">
-                          <span className="text-tcet-gold font-bold">2nd: Date of Joining</span>
-                        </th>
-                        <th className="p-3 border border-slate-200 font-black">Specialization</th>
                         <th className="p-3 border border-slate-200 font-black">Email Address</th>
                         <th className="p-3 border border-slate-200 font-black">Contact No</th>
+                        <th className="p-3 border border-slate-200 font-black text-center w-16">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200 bg-white">
@@ -887,9 +1141,8 @@ const AdminPanel = () => {
                             (fac.department && fac.department.toLowerCase().includes(term)) ||
                             (fac.designation && fac.designation.toLowerCase().includes(term)) ||
                             (fac.hierarchyLabel && fac.hierarchyLabel.toLowerCase().includes(term)) ||
-                            (fac.specialization && fac.specialization.toLowerCase().includes(term)) ||
                             (fac.email && fac.email.toLowerCase().includes(term)) ||
-                            (fac.doj && fac.doj.toLowerCase().includes(term))
+                            (fac.contactNumber && fac.contactNumber.toLowerCase().includes(term))
                           );
                           const matchesDept = facultyDeptFilter === 'all' || fac.department === facultyDeptFilter;
                           const matchesTier = facultyTierFilter === 'all' || String(fac.hierarchyTier) === String(facultyTierFilter);
@@ -897,22 +1150,6 @@ const AdminPanel = () => {
                         })
                         .sort(sortFacultyByPositionAndDOJ)
                         .map((fac, idx) => {
-                          const getBadgeStyle = (tier) => {
-                            switch (tier) {
-                              case 1: return 'bg-amber-100 text-amber-950 border-amber-400 font-black shadow-sm';
-                              case 2: return 'bg-amber-50 text-amber-900 border-amber-300 font-bold';
-                              case 3: return 'bg-purple-100 text-purple-900 border-purple-300 font-bold';
-                              case 4: return 'bg-purple-50 text-purple-800 border-purple-200 font-semibold';
-                              case 5: return 'bg-blue-100 text-blue-900 border-blue-300 font-bold';
-                              case 6: return 'bg-blue-50 text-blue-800 border-blue-200 font-semibold';
-                              case 7: return 'bg-emerald-100 text-emerald-900 border-emerald-300 font-semibold';
-                              case 8: return 'bg-emerald-50 text-emerald-800 border-emerald-200 font-medium';
-                              case 9: return 'bg-slate-100 text-slate-800 border-slate-300 font-medium';
-                              case 10: return 'bg-orange-50 text-orange-800 border-orange-200 font-medium';
-                              default: return 'bg-slate-50 text-slate-600 border-slate-200';
-                            }
-                          };
-
                           return (
                             <tr key={fac._id || idx} className="hover:bg-slate-50 transition-colors">
                               <td className="p-3 font-mono font-bold text-center text-tcet-navy border border-slate-200">
@@ -927,55 +1164,44 @@ const AdminPanel = () => {
                                   )}
                                 </div>
                               </td>
-                            <td className="p-3 font-extrabold text-slate-800 border border-slate-200">
-                              <div className="flex items-center gap-2">
-                                <span>{fac.name}</span>
-                                {fac.email && (
-                                  <span className="inline-block w-2 h-2 rounded-full bg-green-500" title="Active Login Account"></span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="p-3 border border-slate-200 whitespace-nowrap">
-                              <span className={`px-2 py-0.5 text-[10px] uppercase tracking-wide border rounded-sm ${getBadgeStyle(fac.hierarchyTier)}`}>
-                                {fac.hierarchyLabel || `Tier ${fac.hierarchyTier || 9}`}
-                              </span>
-                            </td>
-                            <td className="p-3 text-slate-700 font-semibold border border-slate-200">
-                              {fac.designation || 'Faculty'}
-                            </td>
-                            <td className="p-3 text-slate-700 border border-slate-200 font-medium">
-                              {fac.department}
-                            </td>
-                            <td className="p-3 text-center text-slate-700 border border-slate-200 font-mono text-[11px] whitespace-nowrap">
-                              {fac.doj ? (
-                                <span className="bg-slate-100 px-1.5 py-0.5 border border-slate-200 rounded-sm font-semibold">{fac.doj}</span>
-                              ) : (
-                                <span className="text-slate-300 italic">-</span>
-                              )}
-                            </td>
-                            <td className="p-3 text-slate-600 border border-slate-200">
-                              {fac.specialization ? (
-                                <span className="font-semibold text-tcet-navy bg-slate-100 px-2 py-0.5 border border-slate-200 rounded-sm text-[11px]">
-                                  {fac.specialization}
-                                </span>
-                              ) : (
-                                <span className="text-slate-300 italic">-</span>
-                              )}
-                            </td>
-                            <td className="p-3 text-slate-700 border border-slate-200 font-mono text-[11px]">
-                              {fac.email || <span className="text-slate-300 italic">-</span>}
-                            </td>
-                            <td className="p-3 text-slate-700 border border-slate-200 font-mono text-[11px]">
-                              {fac.contactNumber || <span className="text-slate-300 italic">-</span>}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
+                              <td className="p-3 font-extrabold text-slate-800 border border-slate-200">
+                                <div className="flex items-center gap-2">
+                                  <span>{fac.name}</span>
+                                  {fac.email && (
+                                    <span className="inline-block w-2 h-2 rounded-full bg-green-500" title="Active Login Account"></span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-3 text-slate-700 font-semibold border border-slate-200">
+                                {fac.designation || fac.hierarchyLabel || 'Faculty'}
+                              </td>
+                              <td className="p-3 text-slate-700 border border-slate-200 font-medium">
+                                {fac.department}
+                              </td>
+                              <td className="p-3 text-slate-700 border border-slate-200 font-mono text-[11px]">
+                                {fac.email || <span className="text-slate-300 italic">-</span>}
+                              </td>
+                              <td className="p-3 text-slate-700 border border-slate-200 font-mono text-[11px]">
+                                {fac.contactNumber || <span className="text-slate-300 italic">-</span>}
+                              </td>
+                              <td className="p-3 text-center border border-slate-200">
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteFaculty(fac._id, fac.name)}
+                                  className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all rounded-xs"
+                                  title="Remove Faculty"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5 mx-auto" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-          )}
+            )}
           </div>
         </main>
       )}

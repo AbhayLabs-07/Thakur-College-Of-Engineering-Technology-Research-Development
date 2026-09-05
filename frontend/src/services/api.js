@@ -111,6 +111,14 @@ export const adminService = {
     const res = await API.get('/admin/faculty', { params });
     return res.data;
   },
+  createFaculty: async (data) => {
+    const res = await API.post('/admin/faculty', data);
+    return res.data;
+  },
+  deleteFaculty: async (id) => {
+    const res = await API.delete(`/admin/faculty/${id}`);
+    return res.data;
+  },
   triggerCronScan: async () => {
     const res = await API.post('/cron/trigger-overdue');
     return res.data;
