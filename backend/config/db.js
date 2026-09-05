@@ -1,3 +1,7 @@
+import dns from 'node:dns';
+try {
+  dns.setServers(['1.1.1.1', '8.8.8.8']);
+} catch (e) {}
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import Admin from '../models/Admin.js';

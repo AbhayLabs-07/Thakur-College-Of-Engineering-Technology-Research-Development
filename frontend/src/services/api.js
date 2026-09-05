@@ -107,8 +107,8 @@ export const adminService = {
     const res = await API.put(`/admin/records/${id}/status`, { status, adminNotes });
     return res.data;
   },
-  getFacultyRoster: async () => {
-    const res = await API.get('/admin/faculty');
+  getFacultyRoster: async (params = {}) => {
+    const res = await API.get('/admin/faculty', { params });
     return res.data;
   },
   triggerCronScan: async () => {

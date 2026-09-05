@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ShieldAlert, Settings, FileSpreadsheet, Plus, Trash2, Edit2, 
-  Search, RefreshCw, Calendar, Package, ArrowRightLeft, CheckCircle2, Users, GraduationCap
+  Search, RefreshCw, Calendar, Package, ArrowRightLeft, CheckCircle2, Users, GraduationCap, Award
 } from 'lucide-react';
 import Header from '../components/Header';
 import { adminService, componentService, authService } from '../services/api';
@@ -23,6 +23,55 @@ const AdminPanel = () => {
   const [facultySearch, setFacultySearch] = useState('');
   const [facultyDeptFilter, setFacultyDeptFilter] = useState('all');
   const [facultyTierFilter, setFacultyTierFilter] = useState('all');
+
+  // Sort comparator strictly by Position (Hierarchy Tier) -> Date of Joining (DOJ) -> Deterministic tie-breaker
+  // NOT alphabetical order
+  const sortFacultyByPositionAndDOJ = (a, b) => {
+    // 1. Position / Hierarchy Tier ASC (Tier 1: Principal -> Tier 11: Academic Staff)
+    const tierA = Number(a.hierarchyTier) || 99;
+    const tierB = Number(b.hierarchyTier) || 99;
+    if (tierA !== tierB) {
+      return tierA - tierB;
+    }
+
+    // 2. Date of Joining: earlier date first (highest seniority)
+    // Missing or invalid DOJ placed at the end of their respective tier
+    const getDojTime = (f) => {
+      if (f.dojDate) {
+        const t = new Date(f.dojDate).getTime();
+        if (!isNaN(t)) return t;
+      }
+      if (f.doj && typeof f.doj === 'string') {
+        const parts = f.doj.trim().split(/[\.\-\/]/);
+        if (parts.length === 3) {
+          let d = parseInt(parts[0], 10);
+          let m = parseInt(parts[1], 10);
+          let y = parseInt(parts[2], 10);
+          if (y < 100) y = y < 50 ? 2000 + y : 1900 + y;
+          const dt = new Date(y, m - 1, d).getTime();
+          if (!isNaN(dt)) return dt;
+        }
+      }
+      return Number.MAX_SAFE_INTEGER;
+    };
+
+    const timeA = getDojTime(a);
+    const timeB = getDojTime(b);
+    if (timeA !== timeB) {
+      return timeA - timeB;
+    }
+
+    // 3. Fallback: department seniority order if department filter active, else overall seniorityOrder
+    if (facultyDeptFilter !== 'all' && a.deptSeniorityOrder && b.deptSeniorityOrder) {
+      if (a.deptSeniorityOrder !== b.deptSeniorityOrder) {
+        return a.deptSeniorityOrder - b.deptSeniorityOrder;
+      }
+    }
+
+    const orderA = a.seniorityOrder || a.srNo || 99999;
+    const orderB = b.seniorityOrder || b.srNo || 99999;
+    return orderA - orderB;
+  };
 
   // Inventory form state
   const [isEditing, setIsEditing] = useState(false);
@@ -794,60 +843,90 @@ const AdminPanel = () => {
                 <p className="text-[10px] text-slate-400 mt-1">Run the faculty import or seeder script to populate faculties.</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs border border-slate-200">
-                  <thead>
-                    <tr className="bg-tcet-navy text-white uppercase text-[10px] tracking-wider">
-                      <th className="p-3 border border-slate-200 font-black text-center w-16">Seniority</th>
-                      <th className="p-3 border border-slate-200 font-black">Faculty Name</th>
-                      <th className="p-3 border border-slate-200 font-black">Hierarchy Tier</th>
-                      <th className="p-3 border border-slate-200 font-black">Designation & Roles</th>
-                      <th className="p-3 border border-slate-200 font-black">Department</th>
-                      <th className="p-3 border border-slate-200 font-black text-center">DOJ</th>
-                      <th className="p-3 border border-slate-200 font-black">Specialization</th>
-                      <th className="p-3 border border-slate-200 font-black">Email Address</th>
-                      <th className="p-3 border border-slate-200 font-black">Contact No</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200 bg-white">
-                    {faculties
-                      .filter(fac => {
-                        const term = facultySearch.toLowerCase();
-                        const matchesSearch = !term || (
-                          (fac.name && fac.name.toLowerCase().includes(term)) ||
-                          (fac.department && fac.department.toLowerCase().includes(term)) ||
-                          (fac.designation && fac.designation.toLowerCase().includes(term)) ||
-                          (fac.hierarchyLabel && fac.hierarchyLabel.toLowerCase().includes(term)) ||
-                          (fac.specialization && fac.specialization.toLowerCase().includes(term)) ||
-                          (fac.email && fac.email.toLowerCase().includes(term)) ||
-                          (fac.doj && fac.doj.toLowerCase().includes(term))
-                        );
-                        const matchesDept = facultyDeptFilter === 'all' || fac.department === facultyDeptFilter;
-                        const matchesTier = facultyTierFilter === 'all' || String(fac.hierarchyTier) === String(facultyTierFilter);
-                        return matchesSearch && matchesDept && matchesTier;
-                      })
-                      .map((fac, idx) => {
-                        const getBadgeStyle = (tier) => {
-                          switch (tier) {
-                            case 1: return 'bg-amber-100 text-amber-950 border-amber-400 font-black shadow-sm';
-                            case 2: return 'bg-amber-50 text-amber-900 border-amber-300 font-bold';
-                            case 3: return 'bg-purple-100 text-purple-900 border-purple-300 font-bold';
-                            case 4: return 'bg-purple-50 text-purple-800 border-purple-200 font-semibold';
-                            case 5: return 'bg-blue-100 text-blue-900 border-blue-300 font-bold';
-                            case 6: return 'bg-blue-50 text-blue-800 border-blue-200 font-semibold';
-                            case 7: return 'bg-emerald-100 text-emerald-900 border-emerald-300 font-semibold';
-                            case 8: return 'bg-emerald-50 text-emerald-800 border-emerald-200 font-medium';
-                            case 9: return 'bg-slate-100 text-slate-800 border-slate-300 font-medium';
-                            case 10: return 'bg-orange-50 text-orange-800 border-orange-200 font-medium';
-                            default: return 'bg-slate-50 text-slate-600 border-slate-200';
-                          }
-                        };
+              <div>
+                {/* Active Sorting Hierarchy Notice Banner */}
+                <div className="bg-amber-50/90 border border-amber-200 text-amber-950 px-3.5 py-2.5 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 rounded-sm shadow-xs">
+                  <div className="flex items-center gap-2 font-medium">
+                    <Award className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                    <span>
+                      <strong>Official Roster Order:</strong> Listed strictly by <strong>Position (Academic Hierarchy Tier)</strong> &rarr; then by <strong>Date of Joining (DOJ Seniority)</strong>. <em>(Not alphabetical)</em>
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-amber-800 font-mono font-bold whitespace-nowrap bg-amber-100 px-2.5 py-0.5 border border-amber-300 rounded-sm">
+                    Tier 1 &rarr; Tier 11 | Earliest DOJ First
+                  </span>
+                </div>
 
-                        return (
-                          <tr key={fac._id || idx} className="hover:bg-slate-50 transition-colors">
-                            <td className="p-3 font-mono font-bold text-center text-tcet-navy border border-slate-200">
-                              #{fac.seniorityOrder || idx + 1}
-                            </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-xs border border-slate-200">
+                    <thead>
+                      <tr className="bg-tcet-navy text-white uppercase text-[10px] tracking-wider">
+                        <th className="p-3 border border-slate-200 font-black text-center w-20">
+                          {facultyDeptFilter !== 'all' ? 'Dept Rank' : 'Seniority'}
+                        </th>
+                        <th className="p-3 border border-slate-200 font-black">Faculty Name</th>
+                        <th className="p-3 border border-slate-200 font-black">
+                          <span className="text-tcet-gold font-bold">1st: Position (Tier)</span>
+                        </th>
+                        <th className="p-3 border border-slate-200 font-black">Designation & Roles</th>
+                        <th className="p-3 border border-slate-200 font-black">Department</th>
+                        <th className="p-3 border border-slate-200 font-black text-center">
+                          <span className="text-tcet-gold font-bold">2nd: Date of Joining</span>
+                        </th>
+                        <th className="p-3 border border-slate-200 font-black">Specialization</th>
+                        <th className="p-3 border border-slate-200 font-black">Email Address</th>
+                        <th className="p-3 border border-slate-200 font-black">Contact No</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 bg-white">
+                      {faculties
+                        .filter(fac => {
+                          const term = facultySearch.toLowerCase();
+                          const matchesSearch = !term || (
+                            (fac.name && fac.name.toLowerCase().includes(term)) ||
+                            (fac.department && fac.department.toLowerCase().includes(term)) ||
+                            (fac.designation && fac.designation.toLowerCase().includes(term)) ||
+                            (fac.hierarchyLabel && fac.hierarchyLabel.toLowerCase().includes(term)) ||
+                            (fac.specialization && fac.specialization.toLowerCase().includes(term)) ||
+                            (fac.email && fac.email.toLowerCase().includes(term)) ||
+                            (fac.doj && fac.doj.toLowerCase().includes(term))
+                          );
+                          const matchesDept = facultyDeptFilter === 'all' || fac.department === facultyDeptFilter;
+                          const matchesTier = facultyTierFilter === 'all' || String(fac.hierarchyTier) === String(facultyTierFilter);
+                          return matchesSearch && matchesDept && matchesTier;
+                        })
+                        .sort(sortFacultyByPositionAndDOJ)
+                        .map((fac, idx) => {
+                          const getBadgeStyle = (tier) => {
+                            switch (tier) {
+                              case 1: return 'bg-amber-100 text-amber-950 border-amber-400 font-black shadow-sm';
+                              case 2: return 'bg-amber-50 text-amber-900 border-amber-300 font-bold';
+                              case 3: return 'bg-purple-100 text-purple-900 border-purple-300 font-bold';
+                              case 4: return 'bg-purple-50 text-purple-800 border-purple-200 font-semibold';
+                              case 5: return 'bg-blue-100 text-blue-900 border-blue-300 font-bold';
+                              case 6: return 'bg-blue-50 text-blue-800 border-blue-200 font-semibold';
+                              case 7: return 'bg-emerald-100 text-emerald-900 border-emerald-300 font-semibold';
+                              case 8: return 'bg-emerald-50 text-emerald-800 border-emerald-200 font-medium';
+                              case 9: return 'bg-slate-100 text-slate-800 border-slate-300 font-medium';
+                              case 10: return 'bg-orange-50 text-orange-800 border-orange-200 font-medium';
+                              default: return 'bg-slate-50 text-slate-600 border-slate-200';
+                            }
+                          };
+
+                          return (
+                            <tr key={fac._id || idx} className="hover:bg-slate-50 transition-colors">
+                              <td className="p-3 font-mono font-bold text-center text-tcet-navy border border-slate-200">
+                                <div className="flex flex-col items-center leading-tight">
+                                  <span className="text-tcet-navy font-black text-xs">
+                                    #{facultyDeptFilter !== 'all' && fac.deptSeniorityOrder ? fac.deptSeniorityOrder : (fac.seniorityOrder || idx + 1)}
+                                  </span>
+                                  {facultyDeptFilter !== 'all' && fac.seniorityOrder && (
+                                    <span className="text-[9px] text-slate-400 font-medium">
+                                      Col. #{fac.seniorityOrder}
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
                             <td className="p-3 font-extrabold text-slate-800 border border-slate-200">
                               <div className="flex items-center gap-2">
                                 <span>{fac.name}</span>
@@ -895,7 +974,8 @@ const AdminPanel = () => {
                   </tbody>
                 </table>
               </div>
-            )}
+            </div>
+          )}
           </div>
         </main>
       )}

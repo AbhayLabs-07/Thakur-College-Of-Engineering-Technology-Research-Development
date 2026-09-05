@@ -19,8 +19,8 @@ router.get('/mentors', protect, studentOnly, async (req, res) => {
       query.name = { $regex: search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
     }
     const mentors = await Faculty.find(query)
-      .select('name department designation hierarchyLabel seniorityOrder')
-      .sort({ seniorityOrder: 1, name: 1 });
+      .select('name department designation hierarchyLabel seniorityOrder hierarchyTier doj dojDate')
+      .sort({ seniorityOrder: 1, hierarchyTier: 1, dojDate: 1 });
     res.json(mentors);
   } catch (error) {
     res.status(500).json({ message: error.message });

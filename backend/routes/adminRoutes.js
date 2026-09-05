@@ -27,7 +27,11 @@ router.get('/faculty', protect, adminOnly, async (req, res) => {
       query.hierarchyTier = Number(tier);
     }
 
-    const faculties = await Faculty.find(query).sort({ seniorityOrder: 1, hierarchyTier: 1, dojDate: 1 });
+    const sortCondition = (department && department !== 'all')
+      ? { deptSeniorityOrder: 1, seniorityOrder: 1, hierarchyTier: 1, dojDate: 1 }
+      : { seniorityOrder: 1, hierarchyTier: 1, dojDate: 1 };
+
+    const faculties = await Faculty.find(query).sort(sortCondition);
     const count = await Faculty.countDocuments(query);
     const totalCount = await Faculty.countDocuments();
     res.json({

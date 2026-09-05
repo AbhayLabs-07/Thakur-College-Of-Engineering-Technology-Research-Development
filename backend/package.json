@@ -9,7 +9,8 @@
     "dev": "nodemon server.js",
     "seed": "node seeder.js",
     "generate-data": "node generateData.js",
-    "import-faculty": "node importFaculty.js"
+    "import-faculty": "node importFaculty.js",
+    "reindex-seniority": "node reindex_seniority.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

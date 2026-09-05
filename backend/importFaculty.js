@@ -530,6 +530,27 @@ const importFaculty = async () => {
       }
     }
 
+    // 9. Final Position -> DOJ re-indexing to ensure 0 tier inversions across entire database
+    console.log('\nRunning final Position -> DOJ seniority ranking pass...');
+    const allFinalFaculty = await Faculty.find({}).lean();
+    allFinalFaculty.sort((a, b) => {
+      const tierA = a.hierarchyTier ?? 99;
+      const tierB = b.hierarchyTier ?? 99;
+      if (tierA !== tierB) return tierA - tierB;
+      const timeA = a.dojDate ? new Date(a.dojDate).getTime() : 9999999999999;
+      const timeB = b.dojDate ? new Date(b.dojDate).getTime() : 9999999999999;
+      if (timeA !== timeB) return timeA - timeB;
+      return (a.srNo || a.seniorityOrder || 99999) - (b.srNo || b.seniorityOrder || 99999);
+    });
+
+    const finalBulk = allFinalFaculty.map((f, idx) => ({
+      updateOne: {
+        filter: { _id: f._id },
+        update: { $set: { seniorityOrder: idx + 1 } }
+      }
+    }));
+    await Faculty.bulkWrite(finalBulk);
+
     const totalFinal = await Faculty.countDocuments();
 
     console.log('\n=============================================');
