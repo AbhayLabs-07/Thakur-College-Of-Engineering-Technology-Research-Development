@@ -131,6 +131,22 @@ export const adminService = {
     const res = await API.post('/admin/send-overview-email', data);
     return res.data;
   },
+  getSmtpStatus: async () => {
+    const res = await API.get('/admin/smtp/status');
+    return res.data;
+  },
+  testSmtpConnection: async (targetEmail) => {
+    const res = await API.post('/admin/smtp/test', { targetEmail });
+    return res.data;
+  },
+  sendAuditFileEmail: async (data = {}) => {
+    const res = await API.post('/admin/send-audit-file-email', data);
+    return res.data;
+  },
+  triggerOverdueScan: async (params = {}) => {
+    const res = await API.post('/admin/trigger-overdue-scan', params);
+    return res.data;
+  },
   downloadExport: async (endpoint, filename) => {
     const res = await API.get(endpoint, { responseType: 'blob' });
     const blob = new Blob([res.data], { type: res.headers['content-type'] || 'text/csv' });
