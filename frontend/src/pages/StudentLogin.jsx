@@ -84,11 +84,11 @@ const StudentLogin = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-tcet-navy uppercase tracking-wider mb-1">
-                  ERP ID or User ID
+                  ERP ID
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. 1032250997 or tcet.std.1032250997"
+                  placeholder="Enter ERP ID"
                   value={loginId}
                   onChange={(e) => setLoginId(e.target.value)}
                   className="w-full px-4 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-sm transition-all"

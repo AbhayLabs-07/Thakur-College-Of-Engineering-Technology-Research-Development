@@ -80,11 +80,11 @@ const AdminLogin = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-tcet-navy uppercase tracking-wider mb-1">
-                  Admin User ID / Username or Email
+                  User ID
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. admin or ashish.mudholkar75@gmail.com"
+                  placeholder="Enter User ID"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full px-4 py-2.5 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-sm transition-all"
