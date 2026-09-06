@@ -169,11 +169,17 @@ const RequestsView = ({ onSelectRequest }) => {
 
       {/* Requests Table / Cards */}
       <div className="space-y-4">
-        {filteredRequests.length === 0 ? (
+        {requests.length === 0 ? (
+          <div className="bg-white border-2 border-slate-300 p-16 text-center text-slate-500">
+            <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto mb-2" />
+            <h4 className="font-bold text-xs text-slate-800">Requisition Queue Clear (Operational Status: All Green)</h4>
+            <p className="text-[11px] text-slate-400 mt-1">Sample student requests have been purged. Only genuine submitted requests held for review will appear here.</p>
+          </div>
+        ) : filteredRequests.length === 0 ? (
           <div className="bg-white border-2 border-slate-300 p-16 text-center text-slate-400">
             <Inbox className="w-12 h-12 text-slate-300 mx-auto mb-2" />
             <h4 className="font-bold text-xs text-slate-600">No requests found in this tab.</h4>
-            <p className="text-[11px] text-slate-400 mt-1">Student submissions will automatically appear here once requested.</p>
+            <p className="text-[11px] text-slate-400 mt-1">Adjust your tab selection or search query.</p>
           </div>
         ) : (
           filteredRequests.map((req) => {

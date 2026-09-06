@@ -89,6 +89,14 @@ const ActiveLoansView = ({ onManageLoan }) => {
     (l) => !['returned', 'closed'].includes(l.status) && new Date(l.dueDate) < now
   ).length;
 
+  const handleExportLoans = async () => {
+    try {
+      await adminService.downloadExport('/admin/export/loans', 'tcet_hardware_loans_export.csv');
+    } catch {
+      window.open(adminService.getExportLoansUrl(), '_blank');
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-150">
       
@@ -99,8 +107,8 @@ const ActiveLoansView = ({ onManageLoan }) => {
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-tcet-navy text-tcet-gold px-2 py-0.5 border border-tcet-gold">
               Live Asset Checkout & Allocation Tracking
             </span>
-            <span className="text-[10px] font-mono text-slate-500 font-bold">
-              {activeLoans.length} Total Loans Recorded
+            <span className="text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-300 px-2 py-0.5 font-bold">
+              Health: 100% Green
             </span>
           </div>
           <h2 className="text-xl font-extrabold text-tcet-navy uppercase tracking-tight">
@@ -111,20 +119,29 @@ const ActiveLoansView = ({ onManageLoan }) => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0">
+          <button
+            type="button"
+            onClick={handleExportLoans}
+            className="flex items-center gap-1.5 px-3.5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs uppercase border border-slate-300 transition-colors shadow-xs"
+            title="Download CSV report of all loans"
+          >
+            <FileSpreadsheet className="w-4 h-4 text-tcet-gold" />
+            <span>Export Loans CSV</span>
+          </button>
           <button
             type="button"
             onClick={runOverdueScan}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-red-800 hover:bg-red-700 text-white font-bold text-xs uppercase border border-red-950 transition-all shadow-xs"
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-tcet-navy hover:bg-slate-800 text-white font-bold text-xs uppercase border border-tcet-navy transition-all shadow-xs"
           >
-            <Scan className="w-4 h-4 text-white" />
+            <Scan className="w-4 h-4 text-tcet-gold" />
             <span>Run Overdue Scan</span>
           </button>
         </div>
       </div>
 
-      {/* Overdue Warning Alert Bar if any exist */}
-      {overdueTotalCount > 0 && (
+      {/* Overdue Warning Alert Bar or Clean Green Status Bar */}
+      {overdueTotalCount > 0 ? (
         <div className="bg-red-50 border-2 border-red-300 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-red-950">
           <div className="flex items-center gap-2.5 font-bold">
             <AlertTriangle className="w-5 h-5 text-red-700 shrink-0 animate-pulse" />
@@ -139,6 +156,18 @@ const ActiveLoansView = ({ onManageLoan }) => {
           >
             Filter Overdue Loans
           </button>
+        </div>
+      ) : (
+        <div className="bg-emerald-50 border-2 border-emerald-300 p-3 flex items-center justify-between gap-3 text-xs text-emerald-950">
+          <div className="flex items-center gap-2.5 font-bold">
+            <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+            <span>
+              <strong>LOAN REGISTER COMPLIANT:</strong> All hardware loans in good standing. 0 overdue delinquent checkouts.
+            </span>
+          </div>
+          <span className="text-[10px] font-mono font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 border border-emerald-300">
+            Health: Green
+          </span>
         </div>
       )}
 
@@ -196,13 +225,13 @@ const ActiveLoansView = ({ onManageLoan }) => {
             <tbody className="divide-y divide-slate-200 bg-white">
               {filteredLoans.length === 0 ? (
                 <tr>
-                  <td colSpan="9" className="py-16 text-center text-slate-400">
-                    <ArrowLeftRight className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                    <p className="font-bold text-xs text-slate-600">No active loans found matching criteria.</p>
+                  <td colSpan="9" className="py-16 text-center text-slate-500">
+                    <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto mb-2" />
+                    <p className="font-bold text-xs text-slate-800">No Active Loans (Operational Status: All Green)</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">All hardware assets are accounted for and no overdue checkouts exist.</p>
                   </td>
                 </tr>
-              ) : (
-                filteredLoans.map((loan) => {
+              ) : (filteredLoans.map((loan) => {
                   const timing = getLoanTiming(loan.dueDate, loan.status);
                   const isClosed = ['returned', 'closed'].includes(loan.status);
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Plus, Trash2, Search, Filter, ShoppingCart, 
   HelpCircle, RefreshCw, Layers, History, Award, CheckCircle2, Copy, ArrowLeft,
-  UserCheck, X, Check, Users
+  UserCheck, X, Check, Users, Calendar, AlertCircle
 } from 'lucide-react';
 import Header from '../components/Header';
 import ComponentCard from '../components/ComponentCard';
@@ -402,7 +402,24 @@ const StudentDashboard = () => {
       {activeTab === 'browse' ? (
         wizardStep === 1 ? (
           /* ================= STEP 1: PROJECT & TEAM DETAILS ================= */
-          <div className="max-w-3xl mx-auto px-4 py-10 flex-grow w-full space-y-8">
+          <div className="max-w-3xl mx-auto px-4 py-8 flex-grow w-full space-y-6">
+            
+            {/* Audit Status Notice */}
+            <div className="bg-amber-50 border-2 border-amber-300 p-4 shadow-2xs flex items-start gap-3">
+              <Calendar className="w-5 h-5 text-amber-800 shrink-0 mt-0.5" />
+              <div className="text-xs">
+                <span className="font-mono font-bold uppercase text-[10px] text-amber-950 bg-amber-200 px-2 py-0.5 border border-amber-300 inline-block mb-1">
+                  Scheduled Physical Audit • Mon, Tue, Wed
+                </span>
+                <p className="font-bold text-slate-800">
+                  Laboratory Hardware Re-Inventory in Progress
+                </p>
+                <p className="text-slate-600 mt-0.5 leading-relaxed">
+                  Components are currently cleared in preparation for the upcoming physical audit. You may draft and save your project abstract and team roster now; hardware selections will open immediately post-audit.
+                </p>
+              </div>
+            </div>
+
             <div className="bg-white border-2 border-slate-300 p-8 shadow-sm">
               <div className="border-b border-slate-200 pb-3 mb-6">
                 <span className="text-tcet-gold text-[10px] font-black uppercase tracking-wider">Step 1 of 2</span>
@@ -807,9 +824,21 @@ const StudentDashboard = () => {
                       <p className="text-xs text-tcet-mutedText mt-2">Connecting to laboratory server...</p>
                     </div>
                   ) : components.length === 0 ? (
-                    <div className="text-center py-20 border border-dashed border-slate-300">
-                      <HelpCircle className="w-12 h-12 text-slate-300 mx-auto mb-2" />
-                      <p className="text-slate-500 font-semibold text-xs">No matching components found</p>
+                    <div className="text-center py-16 px-6 border-2 border-dashed border-amber-300 bg-amber-50/50 space-y-3">
+                      <div className="w-12 h-12 bg-amber-100 border border-amber-300 flex items-center justify-center mx-auto text-amber-800">
+                        <Layers className="w-6 h-6 text-amber-700" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-mono font-bold uppercase bg-amber-200 text-amber-950 px-2 py-0.5 border border-amber-300">
+                          Scheduled Physical Audit: Upcoming Mon • Tue • Wed
+                        </span>
+                        <h4 className="font-extrabold text-sm text-tcet-navy uppercase mt-2">
+                          Hardware Inventory Under Audit Preparation
+                        </h4>
+                        <p className="text-xs text-amber-900/80 max-w-md mx-auto mt-1 leading-relaxed">
+                          Laboratory hardware components are temporarily offline for stock verification during the upcoming audit. Requisitions will open immediately once audit verification completes.
+                        </p>
+                      </div>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -123,6 +123,39 @@ export const adminService = {
     const res = await API.post('/cron/trigger-overdue');
     return res.data;
   },
-  getExportInventoryUrl: () => `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/export/inventory`,
-  getExportCredentialsUrl: () => `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/export/credentials`
+  getOverviewDigest: async () => {
+    const res = await API.get('/admin/overview-digest');
+    return res.data;
+  },
+  sendOverviewEmail: async (data = {}) => {
+    const res = await API.post('/admin/send-overview-email', data);
+    return res.data;
+  },
+  downloadExport: async (endpoint, filename) => {
+    const res = await API.get(endpoint, { responseType: 'blob' });
+    const blob = new Blob([res.data], { type: res.headers['content-type'] || 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    if (link.parentNode) link.parentNode.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  },
+  getExportInventoryUrl: () => {
+    const token = authStorage.getItem('token');
+    const base = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/export/inventory`;
+    return token ? `${base}?token=${encodeURIComponent(token)}` : base;
+  },
+  getExportLoansUrl: () => {
+    const token = authStorage.getItem('token');
+    const base = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/export/loans`;
+    return token ? `${base}?token=${encodeURIComponent(token)}` : base;
+  },
+  getExportCredentialsUrl: () => {
+    const token = authStorage.getItem('token');
+    const base = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/export/credentials`;
+    return token ? `${base}?token=${encodeURIComponent(token)}` : base;
+  }
 };

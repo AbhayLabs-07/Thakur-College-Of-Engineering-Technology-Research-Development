@@ -12,7 +12,8 @@ import {
   ArrowRight,
   Clock,
   ExternalLink,
-  ShieldAlert
+  ShieldAlert,
+  Calendar
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 import { adminService } from '../../services/api';
@@ -103,6 +104,36 @@ const DashboardView = ({ onOpenAddComponent, onOpenAddFaculty }) => {
         </div>
       </div>
 
+      {/* Institutional Hardware Audit Readiness Banner */}
+      <div className="bg-amber-50 border-2 border-amber-300 p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-amber-100 border border-amber-300 flex items-center justify-center shrink-0">
+            <Calendar className="w-5 h-5 text-amber-800" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono font-extrabold uppercase bg-amber-200 text-amber-950 px-2 py-0.5 border border-amber-300">
+                Institutional Hardware Audit Active
+              </span>
+              <span className="text-[10px] font-mono text-amber-800 font-bold">
+                Upcoming Mon • Tue • Wed
+              </span>
+            </div>
+            <p className="text-xs text-amber-900 font-medium mt-0.5">
+              Laboratory inventory has been systematically cleared for physical audit verification on Monday, Tuesday, and Wednesday. Urgently needed hardware components will be catalogued immediately post-audit.
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('utilities')}
+          className="shrink-0 px-3.5 py-1.5 bg-amber-800 hover:bg-amber-700 text-white font-bold text-xs uppercase border border-amber-950 transition-colors shadow-xs"
+        >
+          Audit Utilities & Reports
+        </button>
+      </div>
+
       {/* 2. Five Main KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         
@@ -120,8 +151,8 @@ const DashboardView = ({ onOpenAddComponent, onOpenAddFaculty }) => {
             <span className="text-2xl sm:text-3xl font-black font-mono text-slate-900">
               {kpis.totalComponents}
             </span>
-            <span className="block text-[10px] text-slate-500 mt-0.5 font-medium">
-              Registered in lab catalog
+            <span className="block text-[10px] text-amber-700 font-bold mt-0.5">
+              Cleared for Mon-Wed audit
             </span>
           </div>
         </div>
@@ -137,11 +168,11 @@ const DashboardView = ({ onOpenAddComponent, onOpenAddFaculty }) => {
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-2xl sm:text-3xl font-black font-mono text-emerald-700">
+            <span className="text-2xl sm:text-3xl font-black font-mono text-slate-900">
               {kpis.availableComponents}
             </span>
-            <span className="block text-[10px] text-emerald-600 mt-0.5 font-medium">
-              Ready for immediate issue
+            <span className="block text-[10px] text-slate-500 mt-0.5 font-medium">
+              Post-audit cataloguing
             </span>
           </div>
         </div>
@@ -188,28 +219,36 @@ const DashboardView = ({ onOpenAddComponent, onOpenAddFaculty }) => {
 
         {/* KPI 5: OVERDUE COMPONENTS */}
         <div className={`bg-white border-2 p-4 shadow-xs flex flex-col justify-between transition-colors ${
-          kpis.overdueComponents > 0 ? 'border-red-500 bg-red-50/30' : 'border-slate-300'
+          kpis.overdueComponents > 0 
+            ? 'border-red-500 bg-red-50/30' 
+            : 'border-emerald-500 bg-emerald-50/20'
         }`}>
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">
               Overdue Components
             </span>
             <div className={`w-7 h-7 flex items-center justify-center border ${
-              kpis.overdueComponents > 0 ? 'bg-red-100 border-red-300' : 'bg-slate-100 border-slate-200'
+              kpis.overdueComponents > 0 
+                ? 'bg-red-100 border-red-300' 
+                : 'bg-emerald-100 border-emerald-300'
             }`}>
-              <AlertTriangle className={`w-4 h-4 ${kpis.overdueComponents > 0 ? 'text-red-700 animate-pulse' : 'text-slate-400'}`} />
+              {kpis.overdueComponents > 0 ? (
+                <AlertTriangle className="w-4 h-4 text-red-700 animate-pulse" />
+              ) : (
+                <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+              )}
             </div>
           </div>
           <div className="mt-3">
             <span className={`text-2xl sm:text-3xl font-black font-mono ${
-              kpis.overdueComponents > 0 ? 'text-red-600' : 'text-slate-700'
+              kpis.overdueComponents > 0 ? 'text-red-600' : 'text-emerald-700'
             }`}>
               {kpis.overdueComponents}
             </span>
-            <span className={`block text-[10px] mt-0.5 font-medium ${
-              kpis.overdueComponents > 0 ? 'text-red-600 font-bold' : 'text-slate-400'
+            <span className={`block text-[10px] mt-0.5 font-bold ${
+              kpis.overdueComponents > 0 ? 'text-red-600' : 'text-emerald-700'
             }`}>
-              {kpis.overdueComponents > 0 ? 'Urgent attention required' : 'No overdue loans'}
+              {kpis.overdueComponents > 0 ? 'Urgent attention required' : 'Health: 100% Green (0 Overdue)'}
             </span>
           </div>
         </div>
@@ -237,8 +276,10 @@ const DashboardView = ({ onOpenAddComponent, onOpenAddFaculty }) => {
             {/* Students List: ONLY Student Name & ● Session Active */}
             <div className="divide-y divide-slate-100">
               {activeStudentSessions.length === 0 ? (
-                <div className="py-8 text-center text-xs text-slate-400">
-                  No active loan sessions found.
+                <div className="py-8 text-center text-xs text-slate-500 space-y-1">
+                  <CheckCircle2 className="w-6 h-6 text-emerald-600 mx-auto mb-1" />
+                  <p className="font-bold text-slate-700">All Laboratory Hardware Reconciled</p>
+                  <p className="text-[11px] text-slate-400">0 active checkouts. Operational Health: 100% Green.</p>
                 </div>
               ) : (
                 activeStudentSessions.map((loan) => (
@@ -290,8 +331,10 @@ const DashboardView = ({ onOpenAddComponent, onOpenAddFaculty }) => {
             {/* Compact Requests Table */}
             <div className="divide-y divide-slate-100">
               {pendingRequestsList.length === 0 ? (
-                <div className="py-8 text-center text-xs text-slate-400">
-                  No pending student requests in the queue.
+                <div className="py-8 text-center text-xs text-slate-500 space-y-1">
+                  <CheckCircle2 className="w-6 h-6 text-emerald-600 mx-auto mb-1" />
+                  <p className="font-bold text-slate-700">Requisition Queue Clear</p>
+                  <p className="text-[11px] text-slate-400">No student requisitions pending administrative decision.</p>
                 </div>
               ) : (
                 pendingRequestsList.map((req) => (
@@ -309,17 +352,16 @@ const DashboardView = ({ onOpenAddComponent, onOpenAddFaculty }) => {
                           • {new Date(req.requestedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                         </span>
                       </div>
-                      <p className="text-[11px] text-tcet-navy font-semibold truncate">
-                        {req.cartItems.map((ci) => `${ci.componentName} ×${ci.quantity}`).join(', ')}
-                      </p>
-                      <p className="text-[10px] text-slate-500 truncate">
-                        Faculty: {req.facultyMentor?.name}
+                      <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                        {req.projectTitle}
                       </p>
                     </div>
 
-                    <span className="shrink-0 text-[10px] font-mono font-bold uppercase px-2 py-0.5 bg-amber-50 text-amber-900 border border-amber-300">
-                      Pending
-                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] font-mono font-bold bg-amber-50 text-amber-900 border border-amber-300 px-2 py-0.5 uppercase">
+                        Review
+                      </span>
+                    </div>
                   </div>
                 ))
               )}
@@ -333,7 +375,7 @@ const DashboardView = ({ onOpenAddComponent, onOpenAddFaculty }) => {
               onClick={() => setActiveTab('requests')}
               className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase text-tcet-navy hover:text-blue-900 tracking-wide transition-colors"
             >
-              <span>View All Requests</span>
+              <span>Manage All Requests</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -360,29 +402,37 @@ const DashboardView = ({ onOpenAddComponent, onOpenAddFaculty }) => {
             </div>
 
             <div className="space-y-3">
-              {recentActivities.map((act) => (
-                <div 
-                  key={act._id}
-                  className="flex items-start gap-3 p-2.5 hover:bg-slate-50 transition-colors border-l-2 border-slate-300 pl-3"
-                >
-                  <div className="w-2 h-2 rounded-full bg-tcet-navy mt-1.5 shrink-0"></div>
-                  <div className="flex-grow min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-bold text-xs text-slate-900 truncate">
-                        {act.action}: {act.component}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-mono shrink-0">
-                        {new Date(act.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-slate-600 mt-0.5">
-                      {act.student !== '—' && <span>Student: {act.student} • </span>}
-                      {act.faculty !== '—' && <span>Mentor: {act.faculty} • </span>}
-                      <span className="text-slate-500">{act.notes}</span>
-                    </p>
-                  </div>
+              {recentActivities.length === 0 ? (
+                <div className="py-8 text-center text-xs text-slate-500 space-y-1">
+                  <CheckCircle2 className="w-6 h-6 text-emerald-600 mx-auto mb-1" />
+                  <p className="font-bold text-slate-700">Audit Trail Ready & Clean</p>
+                  <p className="text-[11px] text-slate-400">Sample student activities have been purged. Genuine requisitions will be logged here.</p>
                 </div>
-              ))}
+              ) : (
+                recentActivities.map((act) => (
+                  <div 
+                    key={act._id}
+                    className="flex items-start gap-3 p-2.5 hover:bg-slate-50 transition-colors border-l-2 border-slate-300 pl-3"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-tcet-navy mt-1.5 shrink-0"></div>
+                    <div className="flex-grow min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-bold text-xs text-slate-900 truncate">
+                          {act.action}: {act.component}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono shrink-0">
+                          {new Date(act.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 mt-0.5">
+                        {act.student !== '—' && <span>Student: {act.student} • </span>}
+                        {act.faculty !== '—' && <span>Mentor: {act.faculty} • </span>}
+                        <span className="text-slate-500">{act.notes}</span>
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

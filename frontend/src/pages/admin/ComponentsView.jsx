@@ -79,9 +79,12 @@ const ComponentsView = ({ onOpenAddComponent, onEditComponent }) => {
       });
   }, [components, searchTerm, selectedCategory, availabilityFilter, sortBy]);
 
-  const handleExportCSV = () => {
-    const url = adminService.getExportInventoryUrl();
-    window.open(url, '_blank');
+  const handleExportCSV = async () => {
+    try {
+      await adminService.downloadExport('/admin/export/inventory', 'tcet_inventory_log.csv');
+    } catch {
+      window.open(adminService.getExportInventoryUrl(), '_blank');
+    }
   };
 
   const handleOpenRepair = (comp) => {
@@ -106,8 +109,8 @@ const ComponentsView = ({ onOpenAddComponent, onEditComponent }) => {
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-tcet-navy text-tcet-gold px-2 py-0.5 border border-tcet-gold">
               Hardware Laboratory Inventory
             </span>
-            <span className="text-[10px] font-mono text-slate-500 font-bold">
-              {components.length} Catalogued Items
+            <span className="text-[10px] font-mono text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 font-bold">
+              Audit Clearance Active (Mon-Wed)
             </span>
           </div>
           <h2 className="text-xl font-extrabold text-tcet-navy uppercase tracking-tight">
@@ -219,7 +222,37 @@ const ComponentsView = ({ onOpenAddComponent, onEditComponent }) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 bg-white">
-              {filteredComponents.length === 0 ? (
+              {components.length === 0 ? (
+                <tr>
+                  <td colSpan="8" className="py-16 text-center">
+                    <div className="max-w-md mx-auto space-y-3">
+                      <div className="w-12 h-12 bg-amber-50 border border-amber-300 text-amber-800 flex items-center justify-center mx-auto">
+                        <Package className="w-6 h-6 text-amber-700" />
+                      </div>
+                      <div>
+                        <span className="inline-block text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 mb-1.5">
+                          Audit Cycle Active • Upcoming Mon / Tue / Wed
+                        </span>
+                        <h4 className="font-extrabold text-sm text-tcet-navy uppercase">
+                          Hardware Inventory Cleared for Physical Audit
+                        </h4>
+                        <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                          All laboratory hardware components have been removed ahead of the upcoming physical stocktaking audit. Urgently required components will be catalogued immediately following audit sign-off.
+                        </p>
+                      </div>
+                      <div className="pt-2">
+                        <button
+                          type="button"
+                          onClick={onOpenAddComponent}
+                          className="px-4 py-2 bg-tcet-navy hover:bg-slate-800 text-white font-bold text-xs uppercase border border-tcet-navy shadow-xs transition-colors"
+                        >
+                          + Add Urgent Component
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ) : filteredComponents.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="py-16 text-center text-slate-400">
                     <Package className="w-10 h-10 text-slate-300 mx-auto mb-2" />

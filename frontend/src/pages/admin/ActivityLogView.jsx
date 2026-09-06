@@ -163,7 +163,15 @@ const ActivityLogView = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 bg-white font-medium">
-              {filteredLogs.length === 0 ? (
+              {activityLogs.length === 0 ? (
+                <tr>
+                  <td colSpan="8" className="py-16 text-center text-slate-500">
+                    <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto mb-2" />
+                    <p className="font-bold text-xs text-slate-800">Activity Log Ready & Clean (Operational Status: All Green)</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Sample activities have been purged. Genuine student requisitions and administrative actions will appear here.</p>
+                  </td>
+                </tr>
+              ) : filteredLogs.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="py-16 text-center text-slate-400">
                     <History className="w-10 h-10 text-slate-300 mx-auto mb-2" />
