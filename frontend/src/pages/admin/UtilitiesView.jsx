@@ -64,6 +64,22 @@ const UtilitiesView = () => {
       setSmtpStatus(data);
     } catch (err) {
       console.warn('Could not fetch SMTP status from backend:', err.message);
+      setSmtpStatus({
+        config: {
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          user: 'erctcet@gmail.com',
+          mode: 'backend_offline'
+        },
+        verification: {
+          connected: false,
+          is404: err.response?.status === 404,
+          message: err.response?.status === 404 
+            ? 'Backend API (/api/admin/smtp/status) returned 404. Express backend needs to be connected on Vercel or running on localhost:5000.'
+            : err.message
+        }
+      });
     } finally {
       setLoadingSmtp(false);
     }
@@ -88,8 +104,11 @@ const UtilitiesView = () => {
       fetchSmtpStatus();
     } catch (err) {
       console.error(err);
-      const errMsg = err.response?.data?.message || err.message || 'SMTP test failed';
-      setSmtpTestResult({ success: false, message: errMsg });
+      const is404 = err.response?.status === 404;
+      const errMsg = is404
+        ? 'Backend API not found (404: /api/admin/smtp/test). The Express backend server is not connected on this domain or running on localhost:5000.'
+        : err.response?.data?.message || err.message || 'SMTP test failed';
+      setSmtpTestResult({ success: false, message: errMsg, is404 });
       showToast(errMsg, 'error');
     } finally {
       setTestingSmtp(false);
@@ -129,7 +148,11 @@ const UtilitiesView = () => {
       );
     } catch (err) {
       console.error(err);
-      showToast(err.response?.data?.message || 'Failed to dispatch email via SMTP server.', 'error');
+      const is404 = err.response?.status === 404;
+      const errMsg = is404
+        ? 'Backend API endpoint not found (404: /api/admin/send-audit-file-email). Backend server is not reachable.'
+        : err.response?.data?.message || 'Failed to dispatch email via SMTP server.';
+      showToast(errMsg, 'error');
     } finally {
       setIsSendingEmail(false);
     }
@@ -152,7 +175,11 @@ const UtilitiesView = () => {
       }
     } catch (err) {
       console.error(err);
-      showToast(err.response?.data?.message || 'Failed to execute overdue scan.', 'error');
+      const is404 = err.response?.status === 404;
+      const errMsg = is404
+        ? 'Backend API not found (404: /api/admin/trigger-overdue-scan).'
+        : err.response?.data?.message || 'Failed to execute overdue scan.';
+      showToast(errMsg, 'error');
     } finally {
       setScanningOverdue(false);
     }

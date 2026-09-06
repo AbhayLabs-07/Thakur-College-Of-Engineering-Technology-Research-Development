@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { authStorage } from '../utils/storage';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
 
 const API = axios.create({
   baseURL: API_BASE_URL,
@@ -161,17 +161,17 @@ export const adminService = {
   },
   getExportInventoryUrl: () => {
     const token = authStorage.getItem('token');
-    const base = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/export/inventory`;
+    const base = `${API_BASE_URL}/admin/export/inventory`;
     return token ? `${base}?token=${encodeURIComponent(token)}` : base;
   },
   getExportLoansUrl: () => {
     const token = authStorage.getItem('token');
-    const base = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/export/loans`;
+    const base = `${API_BASE_URL}/admin/export/loans`;
     return token ? `${base}?token=${encodeURIComponent(token)}` : base;
   },
   getExportCredentialsUrl: () => {
     const token = authStorage.getItem('token');
-    const base = `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/export/credentials`;
+    const base = `${API_BASE_URL}/admin/export/credentials`;
     return token ? `${base}?token=${encodeURIComponent(token)}` : base;
   }
 };
