@@ -150,16 +150,34 @@ const cleanupDuplicateBorrowRecords = async () => {
   }
 };
 
+let isInitialized = false;
+
 const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
+
+  const uri = process.env.MONGO_URI;
+  if (!uri && process.env.VERCEL) {
+    console.error('[DB Warning] MONGO_URI is not set in Vercel Environment Variables.');
+    return;
+  }
+
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/smart_inventory');
+    const conn = await mongoose.connect(uri || 'mongodb://127.0.0.1:27017/smart_inventory');
     console.log(`MongoDB Connected: ${conn.connection.host}`);
-    await ensureAdmin();
-    await ensureDefaultFaculties();
-    await cleanupDuplicateBorrowRecords();
+    
+    if (!isInitialized) {
+      await ensureAdmin();
+      await ensureDefaultFaculties();
+      await cleanupDuplicateBorrowRecords();
+      isInitialized = true;
+    }
   } catch (error) {
     console.error(`Database Connection Error: ${error.message}`);
-    process.exit(1);
+    if (!process.env.VERCEL) {
+      process.exit(1);
+    }
   }
 };
 

@@ -32,11 +32,11 @@ function getHierarchy(designation) {
     return { tier: 4, label: 'Associate Dean' };
   }
   if ((d.includes('hod') || d.includes('head of department') || d.includes('i/c. hod') || d.includes('officiating hod')) &&
-      !d.includes('deputy') && !d.includes('dy')) {
+    !d.includes('deputy') && !d.includes('dy')) {
     return { tier: 5, label: 'Head of Department' };
   }
   if (d.includes('deputy hod') || d.includes('dy. hod') || d.includes('dy.hod') || d.includes('dy hod') ||
-      d.includes('activity head') || d.includes('controller of examination') || d.includes('tpo')) {
+    d.includes('activity head') || d.includes('controller of examination') || d.includes('tpo')) {
     return { tier: 6, label: 'Deputy HOD / Lead' };
   }
   if (d.includes('professor') && !d.includes('associate') && !d.includes('assistant')) {
@@ -318,7 +318,7 @@ router.put('/records/:id/status', protect, adminOnly, async (req, res) => {
     }
 
     const previousStatus = record.status;
-    
+
     // Status Logic
     if (status === 'handed_out' && previousStatus !== 'handed_out') {
       // Deduct items from inventory
@@ -328,7 +328,7 @@ router.put('/records/:id/status', protect, adminOnly, async (req, res) => {
           return res.status(404).json({ message: `Component not found: ${item.component}` });
         }
         if (comp.quantityAvailable < item.quantity) {
-          return res.status(400).json({ 
+          return res.status(400).json({
             message: `Insufficient stock for ${comp.name}. Available: ${comp.quantityAvailable}, Requested: ${item.quantity}`
           });
         }
@@ -355,7 +355,7 @@ router.put('/records/:id/status', protect, adminOnly, async (req, res) => {
     }
 
     const updatedRecord = await record.save();
-    
+
     const fullyPopulated = await BorrowRecord.findById(updatedRecord._id)
       .populate('student', 'name erpId branch division year email contactNumber')
       .populate('facultyMentor', 'name email department designation')
@@ -374,7 +374,7 @@ router.put('/records/:id/status', protect, adminOnly, async (req, res) => {
 router.get('/export/inventory', protect, adminOnly, async (req, res) => {
   try {
     const components = await Component.find({});
-    
+
     let formattedData = [];
     if (components.length === 0) {
       formattedData.push({
@@ -478,7 +478,7 @@ router.get('/export/loans', protect, adminOnly, async (req, res) => {
 router.get('/export/credentials', protect, adminOnly, async (req, res) => {
   try {
     const credentialsPath = path.join(__dirname, '..', 'credentials.csv');
-    
+
     if (fs.existsSync(credentialsPath)) {
       res.header('Content-Type', 'text/csv');
       res.attachment('student_credentials.csv');
@@ -657,6 +657,7 @@ Thakur College of Engineering & Technology (TCET)`;
     console.error('Error sending overview email:', error);
     res.status(500).json({ message: error.message });
   }
+});
 // @desc    Get SMTP server status and active configuration
 // @route   GET /api/admin/smtp/status
 // @access  Private/Admin
@@ -935,4 +936,3 @@ router.post('/trigger-overdue-scan', protect, adminOnly, async (req, res) => {
 });
 
 export default router;
-

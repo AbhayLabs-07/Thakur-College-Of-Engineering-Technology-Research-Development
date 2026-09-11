@@ -18,7 +18,7 @@ export const runOverdueScan = async ({ dryRun = false, notifyMentor = true } = {
     
     // Query active hardware checkouts past their return due date
     const overdueRecords = await BorrowRecord.find({
-      status: 'handed_out',
+      status: { $in: ['handed_out', 'active'] },
       dueDate: { $lt: today }
     })
       .populate('student', 'name email erpId branch division year rollNo contactNumber')
@@ -31,7 +31,7 @@ export const runOverdueScan = async ({ dryRun = false, notifyMentor = true } = {
     if (totalOverdue === 0) {
       return {
         timestamp: scanTimestamp.toISOString(),
-        scannedRecords: await BorrowRecord.countDocuments({ status: 'handed_out' }),
+        scannedRecords: await BorrowRecord.countDocuments({ status: { $in: ['handed_out', 'active'] } }),
         overdueCount: 0,
         emailsSent: 0,
         status: 'Compliant (All Green)',
