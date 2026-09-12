@@ -7,9 +7,20 @@ export const getSmtpConfig = () => {
   const host = process.env.SMTP_HOST;
   const port = parseInt(process.env.SMTP_PORT || '587', 10);
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
-  const user = process.env.SMTP_USER || process.env.EMAIL_USER || '';
-  const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS || '';
-  const service = process.env.EMAIL_SERVICE || (!host ? 'gmail' : undefined);
+  const rawUser = process.env.SMTP_USER || process.env.EMAIL_USER || '';
+  const rawPass = process.env.SMTP_PASS || process.env.EMAIL_PASS || '';
+
+  // Clean any accidental surrounding quotes or stray whitespace from environment variables
+  const user = rawUser.trim().replace(/^["']|["']$/g, '');
+  const pass = rawPass.trim().replace(/^["']|["']$/g, '');
+
+  const isGmail = Boolean(
+    (host && host.includes('gmail')) ||
+    (process.env.EMAIL_SERVICE && process.env.EMAIL_SERVICE.toLowerCase() === 'gmail') ||
+    user.toLowerCase().endsWith('@gmail.com')
+  );
+
+  const service = isGmail ? 'gmail' : (process.env.EMAIL_SERVICE || (!host ? 'gmail' : undefined));
   const from = process.env.SMTP_FROM || `"TCET R&D Cell" <${user || 'noreply@tcetmumbai.in'}>`;
 
   const isConfigured = Boolean(user && pass && pass !== 'mockpassword123');
@@ -19,7 +30,9 @@ export const getSmtpConfig = () => {
     port,
     secure,
     user,
+    pass,
     service,
+    isGmail,
     from,
     isConfigured,
     mode: isConfigured ? 'live_smtp' : 'development_mock'
@@ -32,8 +45,20 @@ export const getSmtpConfig = () => {
 export const getTransporter = () => {
   const config = getSmtpConfig();
 
-  // If live credentials are provided, construct the live SMTP transport
+  // If live credentials are provided, construct the live transport
   if (config.isConfigured) {
+    // For Gmail accounts, nodemailer's built-in 'gmail' service utilizes direct TLS on port 465,
+    // which bypasses AWS Lambda / Vercel serverless STARTTLS port 587 throttling.
+    if (config.isGmail) {
+      return nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: config.user,
+          pass: config.pass.replace(/\s+/g, '') // Strip spaces in 16-char App Password
+        }
+      });
+    }
+
     if (process.env.SMTP_HOST) {
       return nodemailer.createTransport({
         host: process.env.SMTP_HOST,
@@ -41,20 +66,20 @@ export const getTransporter = () => {
         secure: config.secure,
         auth: {
           user: config.user,
-          pass: process.env.SMTP_PASS || process.env.EMAIL_PASS
+          pass: config.pass
         },
         tls: {
-          rejectUnauthorized: process.env.NODE_ENV === 'production'
+          rejectUnauthorized: false
         }
       });
     }
 
-    // Default to nodemailer service (e.g. gmail)
+    // Default fallback to service
     return nodemailer.createTransport({
       service: config.service || 'gmail',
       auth: {
         user: config.user,
-        pass: process.env.SMTP_PASS || process.env.EMAIL_PASS
+        pass: config.pass.replace(/\s+/g, '')
       }
     });
   }
@@ -110,7 +135,7 @@ export const verifySmtpConnection = async () => {
     return {
       connected: true,
       mode: 'live_smtp',
-      message: `Successfully connected to SMTP mail server (${config.host}:${config.port})`,
+      message: `Successfully connected to SMTP mail server (${config.host || config.service})`,
       config: {
         host: config.host,
         port: config.port,
@@ -120,15 +145,24 @@ export const verifySmtpConnection = async () => {
     };
   } catch (error) {
     console.error('[SMTP Verification Error]:', error);
+    let friendlyMessage = error.message || 'Failed to authenticate with SMTP mail server';
+    
+    if (error.code === 'EAUTH' || (error.message && error.message.includes('535'))) {
+      friendlyMessage = 'Google Authentication Failed (535): Invalid username or App Password. Check that your Vercel Environment Variable `SMTP_PASS` is set to the valid 16-character App Password (e.g. knod ubrf osah iqil) without quotes.';
+    } else if (error.code === 'ESOCKET' || error.code === 'ETIMEDOUT' || error.code === 'ECONNECTION') {
+      friendlyMessage = `Network connection timed out (${error.code || 'TIMEOUT'}) reaching mail server.`;
+    }
+
     return {
       connected: false,
       mode: 'error',
-      message: error.message || 'Failed to authenticate with SMTP mail server',
+      message: friendlyMessage,
       code: error.code || 'ECONNECTION',
+      rawError: error.message,
       config: {
         host: config.host,
         port: config.port,
-        user: config.user
+        user: config.user ? `${config.user.slice(0, 3)}***` : 'Not Configured'
       }
     };
   }

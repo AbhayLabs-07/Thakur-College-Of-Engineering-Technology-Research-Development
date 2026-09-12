@@ -110,7 +110,12 @@ const UtilitiesView = () => {
       const errMsg = is404
         ? 'Backend API not found (404: /api/admin/smtp/test). The Express backend server is not connected on this domain or running on localhost:5000.'
         : err.response?.data?.message || err.message || 'SMTP test failed';
-      setSmtpTestResult({ success: false, message: errMsg, is404 });
+      setSmtpTestResult({
+        success: false,
+        message: errMsg,
+        verification: err.response?.data?.details,
+        is404
+      });
       showToast(errMsg, 'error');
     } finally {
       setTestingSmtp(false);
