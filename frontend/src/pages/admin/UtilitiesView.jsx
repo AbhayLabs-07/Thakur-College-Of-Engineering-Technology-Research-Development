@@ -33,6 +33,7 @@ const UtilitiesView = () => {
   const [loadingSmtp, setLoadingSmtp] = useState(false);
   const [testingSmtp, setTestingSmtp] = useState(false);
   const [smtpTestResult, setSmtpTestResult] = useState(null);
+  const [testRecipientEmail, setTestRecipientEmail] = useState('');
 
   // Email Overview & Audit File Generator State
   const [recipientEmail, setRecipientEmail] = useState('vini.dongre@tcetmumbai.in');
@@ -91,13 +92,14 @@ const UtilitiesView = () => {
 
   // Test SMTP Connection Handshake & Probe
   const handleTestSmtp = async () => {
+    const target = testRecipientEmail.trim() || recipientEmail.trim() || smtpStatus?.config?.user || 'erctcet@gmail.com';
     setTestingSmtp(true);
     setSmtpTestResult(null);
     try {
-      const res = await adminService.testSmtpConnection(recipientEmail);
+      const res = await adminService.testSmtpConnection(target);
       setSmtpTestResult(res);
       if (res.success) {
-        showToast('SMTP handshake verified successfully! Test probe email dispatched.', 'success');
+        showToast(`SMTP test probe dispatched to ${target}! (Check Inbox & Spam)`, 'success');
       } else {
         showToast(res.message || 'SMTP handshake failed.', 'error');
       }
@@ -377,19 +379,31 @@ Thakur College of Engineering & Technology (TCET)`;
           </div>
         </div>
 
-        {/* Action button to test connection */}
-        <div className="flex items-center gap-3 pt-1">
-          <button
-            type="button"
-            disabled={testingSmtp}
-            onClick={handleTestSmtp}
-            className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs uppercase transition-all shadow-xs flex items-center gap-2 disabled:opacity-50"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 text-tcet-gold ${testingSmtp ? 'animate-spin' : ''}`} />
-            <span>{testingSmtp ? 'TESTING HANDSHAKE...' : 'TEST SMTP CONNECTION & SEND PROBE'}</span>
-          </button>
-          <span className="text-[11px] text-slate-500">
-            Sends a diagnostic probe email to verified recipient ({recipientEmail})
+        {/* Action button & target email to test connection */}
+        <div className="space-y-2 pt-1">
+          <label className="block text-[11px] font-mono font-bold uppercase text-slate-700">
+            Dispatch Diagnostic Test Email To:
+          </label>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <input
+              type="email"
+              value={testRecipientEmail}
+              onChange={(e) => setTestRecipientEmail(e.target.value)}
+              placeholder={`Enter recipient email (default: ${smtpStatus?.config?.user || 'erctcet@gmail.com'})`}
+              className="px-3 py-2 border-2 border-slate-300 focus:border-tcet-navy focus:outline-none text-xs font-semibold bg-white flex-1"
+            />
+            <button
+              type="button"
+              disabled={testingSmtp}
+              onClick={handleTestSmtp}
+              className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs uppercase transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 shrink-0"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 text-tcet-gold ${testingSmtp ? 'animate-spin' : ''}`} />
+              <span>{testingSmtp ? 'TESTING HANDSHAKE...' : 'TEST SMTP & SEND PROBE'}</span>
+            </button>
+          </div>
+          <span className="text-[11px] text-slate-500 block">
+            💡 If you do not see the email in your Primary Inbox, please check your <strong>Spam / Junk</strong> folder or <strong>Updates</strong> tab.
           </span>
         </div>
 

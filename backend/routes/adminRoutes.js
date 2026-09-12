@@ -536,7 +536,7 @@ router.get('/overview-digest', protect, adminOnly, async (req, res) => {
 router.post('/send-overview-email', protect, adminOnly, async (req, res) => {
   try {
     const {
-      recipientEmail = process.env.EMAIL_USER || 'rndcelltcet@gmail.com',
+      recipientEmail = process.env.SMTP_USER || process.env.EMAIL_USER || 'erctcet@gmail.com',
       recipientName = 'R&D Governance Committee',
       customNotes = ''
     } = req.body;
@@ -695,7 +695,7 @@ router.post('/smtp/test', protect, adminOnly, async (req, res) => {
     }
 
     let probeResult = null;
-    const recipient = targetEmail || config.user || 'rndcelltcet@gmail.com';
+    const recipient = targetEmail || config.user || process.env.SMTP_USER || 'erctcet@gmail.com';
 
     if (recipient) {
       const subject = `[TCET R&D Cell] SMTP Server Handshake Test Probe — ${new Date().toLocaleDateString('en-GB')}`;
@@ -742,7 +742,7 @@ router.post('/smtp/test', protect, adminOnly, async (req, res) => {
 router.post('/send-audit-file-email', protect, adminOnly, async (req, res) => {
   try {
     const {
-      recipientEmail = process.env.EMAIL_USER || 'rndcelltcet@gmail.com',
+      recipientEmail = process.env.SMTP_USER || process.env.EMAIL_USER || 'erctcet@gmail.com',
       recipientName = 'Institutional Audit Committee',
       customNotes = '',
       includeLoansRegister = true
